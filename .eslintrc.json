@@ -1,3 +1,33 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript",
+    "prettier",
+    "plugin:tailwindcss/recommended"
+  ],
+  "plugins": [
+    "tailwindcss",
+    "unused-imports",
+    "@typescript-eslint",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "root": true,
+  "rules": {
+    "tailwindcss/no-custom-classname": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": "warn"
+  },
+  "settings": {
+    "tailwindcss": {
+      "callees": ["cn"],
+      "config": "./tailwind.config.ts"
+    },
+    "next": {
+      "rootDir": ["./src"]
+    }
+  },
+  "ignorePatterns": ["node_modules/", ".next/", "public/", "assets/"]
 }
