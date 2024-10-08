@@ -1,11 +1,12 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   CardContent,
@@ -24,28 +25,23 @@ import { FormRegisterSchema, RegisterBodyType } from '@/schemas'
 
 import ROUTES from '@/constants/route'
 
-import { handleErrorApi } from '@/lib/utils'
-
 const FormRegister = () => {
-  const { mutateAsync: registerMutation, isPending } = useRegisterMutation()
-  const router = useRouter()
+  const { mutateAsync: register, isPending, error } = useRegisterMutation()
 
   const form = useForm<RegisterBodyType>({
     resolver: zodResolver(FormRegisterSchema),
     defaultValues: {
-      fullName: 'Nguyen Van Viet',
+      name: 'Nguyen Van Viet',
       email: 'nguyenvanviet@gmail.com',
-      password: 'Vietviet@150204',
-      confirmPassword: 'Vietviet@150204'
+      password: 'Vietviet@150204'
     }
   })
 
   async function onSubmit(values: RegisterBodyType) {
     try {
-      await registerMutation(values)
-      router.push(ROUTES.LOGIN)
+      await register(values)
     } catch (error) {
-      handleErrorApi({ error, setError: form.setError })
+      console.log('🚀 ~ onSubmit ~ error:', error)
     }
   }
   return (
@@ -58,7 +54,7 @@ const FormRegister = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2'>
             <FormFields
               control={form.control}
-              name='fullName'
+              name='name'
               label='Fullname'
               Component={Input}
               autoFocus
@@ -78,13 +74,17 @@ const FormRegister = () => {
               Component={PasswordInput}
               placeholder='Password'
             />
-            <FormFields
-              control={form.control}
-              name='confirmPassword'
-              label='Confirm Password'
-              Component={PasswordInput}
-              placeholder='Confirm Password'
-            />
+            {error && (
+              <Alert variant='destructive'>
+                <ExclamationTriangleIcon className='size-4' />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                  {(error as any).payload?.message ||
+                    (error as any).payload?.error ||
+                    'Something went wrong'}
+                </AlertDescription>
+              </Alert>
+            )}
             <p className='cursor-pointer text-right text-sm text-muted-foreground transition-colors hover:text-white hover:underline'>
               Forgot password?
             </p>

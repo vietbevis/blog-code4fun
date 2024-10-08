@@ -5,8 +5,7 @@ const envConfigSchema = z.object({
   NEXT_PUBLIC_API_URL: z.string(),
   NEXT_PUBLIC_API_IMAGE: z.string(),
   NEXT_PUBLIC_IMAGE_SIZE_MAX: z.number(),
-  NEXT_PUBLIC_LEVEL_COMMENT_MAX: z.number(),
-  NEXT_PUBLIC_API_KEY: z.string()
+  NEXT_PUBLIC_LEVEL_COMMENT_MAX: z.number()
 })
 
 const configProject = envConfigSchema.safeParse({
@@ -16,8 +15,7 @@ const configProject = envConfigSchema.safeParse({
   NEXT_PUBLIC_IMAGE_SIZE_MAX: Number(process.env.NEXT_PUBLIC_IMAGE_SIZE_MAX),
   NEXT_PUBLIC_LEVEL_COMMENT_MAX: Number(
     process.env.NEXT_PUBLIC_LEVEL_COMMENT_MAX
-  ),
-  NEXT_PUBLIC_API_KEY: process.env.NEXT_PUBLIC_API_KEY
+  )
 })
 
 if (!configProject.success) {

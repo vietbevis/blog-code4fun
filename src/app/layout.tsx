@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import { geistMono, geistSans } from '@/components/fonts'
 import { Toaster } from '@/components/ui/sonner'
 
+import AuthProvider from '@/providers/auth-provider'
+import NetworkProvider from '@/providers/network-provider'
 import QueryProvider from '@/providers/tanstack-provider'
 import { ThemeProvider } from '@/providers/theme-provider'
 
@@ -24,10 +26,14 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.className} antialiased`}
       >
-        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <QueryProvider>{children}</QueryProvider>
-          <Toaster richColors position='top-center' />
-        </ThemeProvider>
+        <NetworkProvider>
+          <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+            <QueryProvider>
+              <AuthProvider>{children}</AuthProvider>
+              <Toaster richColors position='top-center' />
+            </QueryProvider>
+          </ThemeProvider>
+        </NetworkProvider>
       </body>
     </html>
   )

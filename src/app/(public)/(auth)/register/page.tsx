@@ -1,13 +1,9 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 
 import FormRegister from './FormRegister'
 
 const page = () => {
-  return (
-    <Suspense fallback={<p>Loading...</p>}>
-      <FormRegister />
-    </Suspense>
-  )
+  return <FormRegister />
 }
 
 export default page

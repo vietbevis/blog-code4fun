@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import { UseFormSetError } from 'react-hook-form'
 import { toast } from 'sonner'
 import { twMerge } from 'tailwind-merge'
+import { v4 as uuidv4 } from 'uuid'
 
 import { TokenPayload } from '@/types/auth.type'
 
@@ -32,5 +33,17 @@ export const handleErrorApi = ({
     })
   } else {
     toast.error(error?.payload?.message ?? 'Lỗi không xác định')
+  }
+}
+
+const isBrowser = typeof window !== 'undefined'
+
+export function getDeviceInfo() {
+  const userAgent = isBrowser ? window.navigator.userAgent : ''
+  const deviceType = isBrowser ? window.navigator.platform : ''
+  const deviceId = `${userAgent}-${deviceType}-${uuidv4()}`
+  return {
+    deviceId,
+    deviceType
   }
 }

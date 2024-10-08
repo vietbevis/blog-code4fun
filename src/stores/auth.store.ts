@@ -1,41 +1,29 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-import { LoginResponseType, UserFromToken } from '@/types/auth.type'
+import { LoginResponseType, RoleType } from '@/types/auth.type'
 
 import { decodeToken } from '@/lib/utils'
 
 interface AuthState {
   isAuth: boolean
-  token: LoginResponseType['data'] | null
-  user: UserFromToken | null
-  login: (token: LoginResponseType['data']) => void
+  token: LoginResponseType | null
+  roles: RoleType[]
+  login: (token: LoginResponseType) => void
   logout: () => void
 }
 
 const useAuthStore = create<AuthState>()(
   persist<AuthState>(
-    (set, get) => ({
+    (set) => ({
       isAuth: false,
       token: null,
-      user: null,
-      login: (token: LoginResponseType['data']) => {
-        try {
-          const decodedToken = decodeToken(token.accessToken)
-          const user = decodedToken.user
-
-          // Nếu token hợp lệ và có user, thiết lập trạng thái đăng nhập
-          if (user) {
-            set({ isAuth: true, token, user })
-          } else {
-            console.error('Invalid token structure')
-          }
-        } catch (error) {
-          console.error('Login failed:', error)
-          get().logout() // Logout nếu có lỗi trong quá trình xử lý token
-        }
+      roles: [],
+      login: (token: LoginResponseType) => {
+        const decodedToken = decodeToken(token.accessToken)
+        set({ isAuth: true, token, roles: decodedToken.roles })
       },
-      logout: () => set({ isAuth: false, token: null, user: null })
+      logout: () => set({ isAuth: false, token: null, roles: [] })
     }),
     {
       name: 'auth-storage',

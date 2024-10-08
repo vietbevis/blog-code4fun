@@ -1,10 +1,12 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import Link from 'next/link'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   CardContent,
@@ -19,34 +21,33 @@ import { PasswordInput } from '@/components/ui/password-input'
 
 import { useLoginMutation } from '@/services/queries/auth.query'
 
-import useAuthStore from '@/stores/auth.store'
-
 import { FormLoginSchema, LoginBodyType } from '@/schemas'
 
 import ROUTES from '@/constants/route'
 
-import { handleErrorApi } from '@/lib/utils'
+import { getDeviceInfo } from '@/lib/utils'
 
 const FormLogin = () => {
-  const { mutateAsync: loginMutation, isPending } = useLoginMutation()
-  const login = useAuthStore((state) => state.login)
+  const { mutateAsync: login, isPending, error } = useLoginMutation()
+  const deviceInfo = getDeviceInfo()
 
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(FormLoginSchema),
     defaultValues: {
-      email: 'nguyenvanviet@gmail.com',
-      password: 'Vietviet@150204'
+      email: 'nguyenvanviet.150204@gmail.com',
+      password: 'NguyenvanA@123',
+      deviceInfo
     }
   })
 
   async function onSubmit(values: LoginBodyType) {
     try {
-      const result = await loginMutation(values)
-      login(result.payload.data)
+      await login(values)
     } catch (error) {
-      handleErrorApi({ error, setError: form.setError })
+      console.log('🚀 ~ onSubmit ~ error:', error)
     }
   }
+
   return (
     <>
       <CardHeader>
@@ -70,6 +71,17 @@ const FormLogin = () => {
               Component={PasswordInput}
               placeholder='Enter your email'
             />
+            {error && (
+              <Alert variant='destructive'>
+                <ExclamationTriangleIcon className='size-4' />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                  {(error as any).payload?.message ||
+                    (error as any).payload?.error ||
+                    'Something went wrong'}
+                </AlertDescription>
+              </Alert>
+            )}
             <p className='cursor-pointer text-right text-sm text-muted-foreground transition-colors hover:text-white hover:underline'>
               Forgot password?
             </p>

@@ -9,14 +9,16 @@ import { HttpError } from '@/lib/http'
 
 export async function POST(request: Request) {
   const body = (await request.json()) as LoginBodyType
+  const deviceInfo = body.deviceInfo
   const cookieStore = cookies()
   try {
     const result = await AuthService.sLogin(body)
-    const { accessToken, refreshToken } = result.payload.data
+    const { accessToken, refreshToken } = result.payload
     handleSetCookieToken({
       cookieStore,
       accessToken,
-      refreshToken
+      refreshToken,
+      deviceInfo
     })
     return Response.json(result.payload)
   } catch (error: any) {

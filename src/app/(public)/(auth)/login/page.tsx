@@ -1,12 +1,14 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 
 import FormLogin from './FormLogin'
+import LogoutPage from './logout'
 
 const page = () => {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <>
       <FormLogin />
-    </Suspense>
+      <LogoutPage />
+    </>
   )
 }
 
