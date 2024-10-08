@@ -3,17 +3,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import {
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
+import { CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
 import FormFields from '@/components/ui/form-field'
 import { Input } from '@/components/ui/input'
@@ -30,6 +26,7 @@ import { getDeviceInfo } from '@/lib/utils'
 const FormLogin = () => {
   const { mutateAsync: login, isPending, error } = useLoginMutation()
   const deviceInfo = getDeviceInfo()
+  const router = useRouter()
 
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(FormLoginSchema),
@@ -43,6 +40,7 @@ const FormLogin = () => {
   async function onSubmit(values: LoginBodyType) {
     try {
       await login(values)
+      router.push(ROUTES.HOME)
     } catch (error) {
       console.log('🚀 ~ onSubmit ~ error:', error)
     }

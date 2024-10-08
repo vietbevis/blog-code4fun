@@ -11,14 +11,12 @@ import AuthService from '../auth.service'
 
 export const useLoginMutation = () => {
   const queryClient = useQueryClient()
-  const router = useRouter()
   const login = useAuthStore((state) => state.login)
   return useMutation({
     mutationFn: AuthService.login,
     onSuccess: (data) => {
       queryClient.refetchQueries({ queryKey: [EKeyQuery.ACCOUNT_ME] })
       login(data.payload)
-      router.push(ROUTES.HOME)
       toast.success('Login successfully!')
     }
   })
@@ -38,11 +36,11 @@ export const useRegisterMutation = () => {
 }
 
 export const useLogoutMutation = () => {
-  // const router = useRouter()
+  const { logout } = useAuthStore()
   return useMutation({
     mutationFn: AuthService.logout,
     onSuccess: () => {
-      // router.push(ROUTES.HOME)
+      logout()
       toast.success('Logout successfully!')
     }
   })

@@ -35,8 +35,7 @@ export class HttpError extends Error {
   }
 }
 
-export const normalizePath = (path: string) =>
-  path.startsWith('/') ? path.slice(1) : path
+export const normalizePath = (path: string) => (path.startsWith('/') ? path.slice(1) : path)
 
 // Body
 // Nếu options.body là FormData thì body = options.body
@@ -54,9 +53,7 @@ const getBaseHeaders = (body: any): Record<string, string> => ({
 export const isClient = typeof window !== 'undefined'
 
 const getAuthorizationHeader = (): string | undefined => {
-  const token = isClient
-    ? useAuthStore.getState().token?.accessToken
-    : undefined
+  const token = isClient ? useAuthStore.getState().token?.accessToken : undefined
   return token ? `Bearer ${token}` : undefined
 }
 
@@ -121,9 +118,7 @@ const request = async <Response>(
       } else {
         // Đây là trường hợp khi mà chúng ta vẫn còn access token (còn hạn)
         // Và chúng ta gọi API ở Next.js Server (Route Handler, Server Component) đến Server Backend
-        const accessToken = (options?.headers as any)?.Authorization.split(
-          'Bearer '
-        )[1]
+        const accessToken = (options?.headers as any)?.Authorization.split('Bearer ')[1]
         redirect(`/login?accessToken=${accessToken}`)
       }
     } else throw new HttpError(data)
@@ -136,18 +131,10 @@ const http = {
   get<Response>(url: string, options?: Omit<RequestOptions, 'body'>) {
     return request<Response>('GET', url, options)
   },
-  post<Response>(
-    url: string,
-    body: any,
-    options?: Omit<RequestOptions, 'body'>
-  ) {
+  post<Response>(url: string, body: any, options?: Omit<RequestOptions, 'body'>) {
     return request<Response>('POST', url, { ...options, body })
   },
-  put<Response>(
-    url: string,
-    body: any,
-    options?: Omit<RequestOptions, 'body'>
-  ) {
+  put<Response>(url: string, body: any, options?: Omit<RequestOptions, 'body'>) {
     return request<Response>('PUT', url, { ...options, body })
   },
   delete<Response>(url: string, options?: Omit<RequestOptions, 'body'>) {

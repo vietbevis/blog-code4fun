@@ -12,42 +12,28 @@ export function middleware(request: NextRequest) {
   const accessToken = request.cookies.get(EKeyToken.ACCESS_TOKEN)?.value
   const refreshToken = request.cookies.get(EKeyToken.REFRESH_TOKEN)?.value
 
-  // Kiểm tra xem trang hiện tại có phải trang private không
-  const isProtectedRoute = PROTECTED_PATHS.some((path) =>
-    pathname.startsWith(path)
-  )
+  const isProtectedRoute = PROTECTED_PATHS.some((path) => pathname.startsWith(path))
+  const isAuthRoute = AUTH_PATHS.includes(pathname)
 
-  // Kiểm tra xem trang hiện tại có phải trang đăng nhập hoặc đăng ký không
-  const isAuthRoute = AUTH_PATHS.some((path) => pathname === path)
-
-  // Nếu người dùng đã đăng nhập (có refresh token) nhưng không có access token => logout
   if (refreshToken && !accessToken) {
-    const logoutUrl = new URL(ROUTES.LOGOUT, request.url)
-    logoutUrl.searchParams.set('accessToken', refreshToken)
+    if (searchParams.has(EKeyToken.ACCESS_TOKEN)) {
+      return NextResponse.next()
+    }
+    const logoutUrl = new URL(ROUTES.LOGIN, request.url)
+    logoutUrl.searchParams.set(EKeyToken.ACCESS_TOKEN, refreshToken)
     return NextResponse.redirect(logoutUrl)
   }
 
-  // Nếu có refresh token và truy cập trang đăng nhập hoặc đăng ký
   if (refreshToken && isAuthRoute) {
-    if (searchParams.get(EKeyToken.ACCESS_TOKEN)) {
-      // Nếu có access token trong query params, cho phép truy cập
-      return NextResponse.next()
-    }
-    // Push về trang chính
     return NextResponse.redirect(new URL(ROUTES.HOME, request.url))
   }
 
-  // Trang private, kiểm tra xem người dùng đã đăng nhập chưa
-  if (isProtectedRoute) {
-    if (!refreshToken) {
-      // Chưa đăng nhập, chuyển hướng đến trang đăng nhập
-      const loginUrl = new URL(ROUTES.LOGIN, request.url)
-      loginUrl.searchParams.set('redirect', pathname)
-      return NextResponse.redirect(loginUrl)
-    }
+  if (isProtectedRoute && !refreshToken) {
+    const loginUrl = new URL(ROUTES.LOGIN, request.url)
+    loginUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(loginUrl)
   }
 
-  // Trường hợp còn lại, cho phép truy cập (bao gồm cả trang public)
   return NextResponse.next()
 }
 

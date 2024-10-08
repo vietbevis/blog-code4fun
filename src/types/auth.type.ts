@@ -85,6 +85,7 @@ export interface PostQueryParams {
 
 // Auth related types
 export interface TokenPayload {
+  userId: string
   sub: string
   roles: RoleType[]
   iss: string

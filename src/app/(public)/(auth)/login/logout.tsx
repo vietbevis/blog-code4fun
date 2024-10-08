@@ -1,80 +1,52 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { Suspense, memo, useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 import { useLogoutMutation } from '@/services/queries/auth.query'
 
 import useAuthStore from '@/stores/auth.store'
-
-import { useMounted } from '@/hooks/useMounted'
 
 import { EKeyToken } from '@/constants/enum'
 import ROUTES from '@/constants/route'
 
 import Loading from '@/app/loading'
 
-const getAccessTokenFromStore = () =>
-  useAuthStore.getState().token?.accessToken || null
-
-const getRefreshTokenFromStore = () =>
-  useAuthStore.getState().token?.refreshToken || null
-
-const LogoutComponent = () => {
-  const { mutateAsync: logoutMutation } = useLogoutMutation()
+const LogoutComponent: React.FC = () => {
+  const { mutate } = useLogoutMutation()
   const router = useRouter()
-  const { logout } = useAuthStore()
   const searchParams = useSearchParams()
-  const accessTokenFromUrl = searchParams.get(EKeyToken.ACCESS_TOKEN)
-  const refreshTokenFromUrl = searchParams.get(EKeyToken.REFRESH_TOKEN)
-  const mounted = useMounted()
+  const { token } = useAuthStore()
 
-  const handleLogout = useCallback(async () => {
-    const accessTokenInStore = getAccessTokenFromStore()
-    const refreshTokenInStore = getRefreshTokenFromStore()
-
-    if (
-      mounted &&
-      ((accessTokenFromUrl && accessTokenFromUrl === accessTokenInStore) ||
-        (refreshTokenFromUrl && refreshTokenFromUrl === refreshTokenInStore))
-    ) {
-      try {
-        console.log('Token matches, logging out...')
-        await logoutMutation()
-        logout()
-      } catch (error) {
-        console.error('Error during logout:', error)
-      }
-    } else if (
-      accessTokenFromUrl !== accessTokenInStore ||
-      refreshTokenFromUrl !== refreshTokenInStore
-    ) {
-      console.log(
-        'Token mismatch or component not mounted, redirecting to home...'
-      )
-      router.push(ROUTES.HOME)
-    }
-  }, [
-    accessTokenFromUrl,
-    logout,
-    logoutMutation,
-    mounted,
-    refreshTokenFromUrl,
-    router
-  ])
+  const tokenFromUrl = searchParams.get(EKeyToken.ACCESS_TOKEN)
+  const { accessToken, refreshToken } = token || {}
 
   useEffect(() => {
-    handleLogout()
-  }, [handleLogout])
+    const performLogout = async () => {
+      if (tokenFromUrl === accessToken || tokenFromUrl === refreshToken) {
+        try {
+          mutate()
+          router.replace(ROUTES.LOGIN)
+        } catch (error) {
+          console.log('🚀 ~ file: logout.tsx:31 ~ performLogout ~ error:', error)
+        }
+      } else {
+        router.replace(ROUTES.LOGIN)
+      }
+    }
+
+    performLogout()
+  }, [tokenFromUrl, accessToken, refreshToken, router, mutate])
+
   return null
 }
 
-const LogoutPage = memo(function LogoutInner() {
+const LogoutPage: React.FC = () => {
   return (
-    <Suspense fallback={<Loading />}>
+    <React.Suspense fallback={<Loading />}>
       <LogoutComponent />
-    </Suspense>
+    </React.Suspense>
   )
-})
+}
 
 export default LogoutPage

@@ -12,15 +12,15 @@ export async function POST(request: Request) {
   const deviceInfo = body.deviceInfo
   const cookieStore = cookies()
   try {
-    const result = await AuthService.sLogin(body)
-    const { accessToken, refreshToken } = result.payload
+    const { payload } = await AuthService.sLogin(body)
+    const { accessToken, refreshToken } = payload
     handleSetCookieToken({
       cookieStore,
       accessToken,
       refreshToken,
       deviceInfo
     })
-    return Response.json(result.payload)
+    return Response.json(payload)
   } catch (error: any) {
     if (error instanceof HttpError) {
       return Response.json(error.payload, {
