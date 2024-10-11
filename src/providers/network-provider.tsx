@@ -7,6 +7,8 @@ import useDialogStore from '@/stores/dialog.store'
 
 import { useNetwork } from '@/hooks/useNetwork'
 
+import Loading from '@/app/loading'
+
 const NetworkProvider = ({
   children
 }: Readonly<{
@@ -36,6 +38,8 @@ const NetworkProvider = ({
     // Cập nhật trạng thái cũ
     setOldStatus(networkStatus.online)
   }, [close, networkStatus.online, oldStatus, openDialog])
+
+  if (!networkStatus.online) return <Loading />
 
   return children
 }

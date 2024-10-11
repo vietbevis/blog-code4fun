@@ -11,7 +11,8 @@
   "tailwindConfig": "./tailwind.config.ts",
   "plugins": [
     "prettier-plugin-tailwindcss",
-    "@trivago/prettier-plugin-sort-imports"
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
   ],
   "importOrder": [
     "^@/components(.*)$",

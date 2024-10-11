@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { geistMono, geistSans } from '@/components/fonts'
+import Header from '@/components/header/Header'
 import { Toaster } from '@/components/ui/sonner'
 
 import AuthProvider from '@/providers/auth-provider'
@@ -24,16 +25,22 @@ export default function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.className} antialiased`}
+        className={`${geistSans.variable} ${geistMono.className} h-screen overflow-y-scroll antialiased`}
       >
-        <NetworkProvider>
-          <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+          <NetworkProvider>
             <QueryProvider>
-              <AuthProvider>{children}</AuthProvider>
-              <Toaster richColors position='top-center' />
+              <AuthProvider>
+                <Header />
+                <main>
+                  <div className='h-16 w-full bg-card'></div>
+                  <div className='container'>{children}</div>
+                </main>
+              </AuthProvider>
             </QueryProvider>
-          </ThemeProvider>
-        </NetworkProvider>
+          </NetworkProvider>
+          <Toaster richColors position='top-center' />
+        </ThemeProvider>
       </body>
     </html>
   )

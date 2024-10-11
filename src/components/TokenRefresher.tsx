@@ -9,7 +9,7 @@ import ROUTES from '@/constants/route'
 
 import { checkAndRefreshToken } from '@/lib/utils'
 
-const UNAUTHENTICATED_PATH = ['/login', '/logout', '/refresh-token']
+const UNAUTHENTICATED_PATH = [ROUTES.LOGIN, ROUTES.REGISTER]
 
 export default function TokenRefresher() {
   const accessToken = useAuthStore((state) => state.token?.accessToken)

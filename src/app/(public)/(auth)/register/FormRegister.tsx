@@ -8,12 +8,7 @@ import { useForm } from 'react-hook-form'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import {
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
+import { CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
 import FormFields from '@/components/ui/form-field'
 import { Input } from '@/components/ui/input'
@@ -24,6 +19,8 @@ import { useRegisterMutation } from '@/services/queries/auth.query'
 import { FormRegisterSchema, RegisterBodyType } from '@/schemas'
 
 import ROUTES from '@/constants/route'
+
+import Oauth2 from '../Oauth2'
 
 const FormRegister = () => {
   const { mutateAsync: register, isPending, error } = useRegisterMutation()
@@ -41,13 +38,14 @@ const FormRegister = () => {
     try {
       await register(values)
     } catch (error) {
-      console.log('🚀 ~ onSubmit ~ error:', error)
+      console.log('🚀 ~ file: FormRegister.tsx:44 ~ onSubmit ~ error:', error)
     }
   }
   return (
     <>
-      <CardHeader>
+      <CardHeader className='space-y-3 pt-0'>
         <CardTitle className='text-center text-2xl'>Register</CardTitle>
+        <Oauth2 />
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -85,7 +83,7 @@ const FormRegister = () => {
                 </AlertDescription>
               </Alert>
             )}
-            <p className='cursor-pointer text-right text-sm text-muted-foreground transition-colors hover:text-white hover:underline'>
+            <p className='cursor-pointer text-right text-sm text-muted-foreground transition-colors hover:text-black hover:underline dark:hover:text-white'>
               Forgot password?
             </p>
             <Button type='submit' className='w-full' loading={isPending}>

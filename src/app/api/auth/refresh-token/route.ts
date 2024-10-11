@@ -8,8 +8,9 @@ import { handleSetCookieToken } from '@/lib/handleSetCookieToken'
 
 export async function POST() {
   const cookieStore = cookies()
+  const token = cookieStore.get(EKeyToken.ACCESS_TOKEN)?.value
   const refresh_Token = cookieStore.get(EKeyToken.REFRESH_TOKEN)?.value
-  if (!refresh_Token) {
+  if (!refresh_Token || !token) {
     return Response.json(
       {
         message: 'Không tìm thấy refreshToken'
@@ -20,7 +21,7 @@ export async function POST() {
     )
   }
   try {
-    const { payload } = await AuthService.sRefreshToken(refresh_Token)
+    const { payload } = await AuthService.sRefreshToken(token, refresh_Token)
     const { accessToken, refreshToken } = payload
     handleSetCookieToken({
       cookieStore,

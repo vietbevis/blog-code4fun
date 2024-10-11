@@ -23,6 +23,8 @@ import ROUTES from '@/constants/route'
 
 import { getDeviceInfo } from '@/lib/utils'
 
+import Oauth2 from '../Oauth2'
+
 const FormLogin = () => {
   const { mutateAsync: login, isPending, error } = useLoginMutation()
   const deviceInfo = getDeviceInfo()
@@ -41,6 +43,7 @@ const FormLogin = () => {
     try {
       await login(values)
       router.push(ROUTES.HOME)
+      router.refresh()
     } catch (error) {
       console.log('🚀 ~ onSubmit ~ error:', error)
     }
@@ -48,8 +51,9 @@ const FormLogin = () => {
 
   return (
     <>
-      <CardHeader>
+      <CardHeader className='space-y-3 pt-0'>
         <CardTitle className='text-center text-2xl'>Login</CardTitle>
+        <Oauth2 />
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -80,7 +84,7 @@ const FormLogin = () => {
                 </AlertDescription>
               </Alert>
             )}
-            <p className='cursor-pointer text-right text-sm text-muted-foreground transition-colors hover:text-white hover:underline'>
+            <p className='cursor-pointer text-right text-sm text-muted-foreground transition-colors hover:text-black hover:underline dark:hover:text-white'>
               Forgot password?
             </p>
             <Button type='submit' className='w-full' loading={isPending}>

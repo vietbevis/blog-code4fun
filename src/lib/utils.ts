@@ -1,5 +1,7 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import { type ClassValue, clsx } from 'clsx'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import jwt from 'jsonwebtoken'
 import { UseFormSetError } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -7,6 +9,8 @@ import { twMerge } from 'tailwind-merge'
 import { v4 as uuidv4 } from 'uuid'
 
 import AuthService from '@/services/auth.service'
+
+import envConfig from '@/configs/envConfig'
 
 import useAuthStore from '@/stores/auth.store'
 
@@ -96,4 +100,19 @@ export const checkAndRefreshToken = async (param?: {
       return param?.onError && param.onError()
     }
   }
+}
+
+export function formatDate(date: string) {
+  dayjs.extend(relativeTime)
+  const commentTime = dayjs(date).fromNow()
+  return commentTime
+}
+export const checkImageURL = (url: string | null | undefined) => {
+  if (!url) {
+    return '/avatar-default.png'
+  }
+  if (url.startsWith('http')) {
+    return url
+  }
+  return `${envConfig.NEXT_PUBLIC_API_IMAGE}/${url}`
 }

@@ -10,12 +10,10 @@ import ROUTES from '@/constants/route'
 import AuthService from '../auth.service'
 
 export const useLoginMutation = () => {
-  const queryClient = useQueryClient()
   const login = useAuthStore((state) => state.login)
   return useMutation({
     mutationFn: AuthService.login,
     onSuccess: (data) => {
-      queryClient.refetchQueries({ queryKey: [EKeyQuery.ACCOUNT_ME] })
       login(data.payload)
       toast.success('Login successfully!')
     }
@@ -37,10 +35,12 @@ export const useRegisterMutation = () => {
 
 export const useLogoutMutation = () => {
   const { logout } = useAuthStore()
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: AuthService.logout,
     onSuccess: () => {
       logout()
+      queryClient.removeQueries({ queryKey: [EKeyQuery.ACCOUNT_ME] })
       toast.success('Logout successfully!')
     }
   })

@@ -3,7 +3,6 @@
 import Image from 'next/image'
 import React from 'react'
 
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
 const layout = ({
@@ -12,26 +11,18 @@ const layout = ({
   children: React.ReactNode
 }>) => {
   return (
-    <div className='flex min-h-screen items-center justify-center p-4'>
-      <Card className='w-full max-w-96'>
+    <div className='flex min-h-[calc(100dvh-4rem)] items-center justify-center p-4'>
+      <Card className='w-full max-w-96 pb-2 pt-4'>
         <Image
           src={'/logo.png'}
           alt='logo'
-          width={500}
-          height={500}
+          width={800}
+          height={800}
           priority
-          className='mx-auto w-24 p-4'
+          quality={100}
+          className='mx-auto w-24'
         />
         {children}
-        <div className='flex items-center justify-center gap-2 px-4'>
-          <div className='h-px w-full bg-muted-foreground'></div>
-          <p>OR</p>
-          <div className='h-px w-full bg-muted-foreground'></div>
-        </div>
-        <div className='flex items-center justify-center gap-2 p-4'>
-          <Button className='w-full'>Google</Button>
-          <Button className='w-full'>Github</Button>
-        </div>
       </Card>
     </div>
   )

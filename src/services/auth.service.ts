@@ -17,8 +17,7 @@ const AuthService = {
     status: number
     payload: LoginResponseType
   }> | null,
-  sLogin: (body: LoginBodyType) =>
-    http.post<LoginResponseType>(ROUTES.BACKEND.LOGIN, body),
+  sLogin: (body: LoginBodyType) => http.post<LoginResponseType>(ROUTES.BACKEND.LOGIN, body),
   login: (body: LoginBodyType) =>
     http.post<LoginResponseType>(ROUTES.HANDLER.LOGIN, body, {
       baseUrl: ''
@@ -35,29 +34,36 @@ const AuthService = {
     http.post<RegisterResponseType>(ROUTES.HANDLER.REGISTER, body, {
       baseUrl: ''
     }),
-  sLogout: (body: LogoutBodyType) =>
-    http.put<LogoutResponseType>(ROUTES.BACKEND.LOGOUT, body),
+  sLogout: (accessToken: string, body: LogoutBodyType) =>
+    http.put<LogoutResponseType>(ROUTES.BACKEND.LOGOUT, body, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    }),
   logout: () =>
     http.put<LogoutResponseType>(ROUTES.HANDLER.LOGOUT, null, {
       baseUrl: ''
     }),
-  sRefreshToken: (refreshToken: string) =>
-    http.post<LoginResponseType>(ROUTES.BACKEND.REFRESH_TOKEN, {
-      refreshToken
-    }),
-  changePassword: (body: UpdatePasswordType) =>
-    http.put(ROUTES.BACKEND.CHANGE_PASSWORD, body),
+  sRefreshToken: (accessToken: string, refreshToken: string) =>
+    http.post<LoginResponseType>(
+      ROUTES.BACKEND.REFRESH_TOKEN,
+      {
+        refreshToken
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    ),
+  changePassword: (body: UpdatePasswordType) => http.put(ROUTES.BACKEND.CHANGE_PASSWORD, body),
 
   // xử lý trường hợp duplicate request lúc reload page hoặc vào page lần đầu hay chuyển page
   async refreshToken() {
     if (this.refreshTokenRequest) return this.refreshTokenRequest
-    this.refreshTokenRequest = http.post<LoginResponseType>(
-      ROUTES.HANDLER.REFRESH_TOKEN,
-      null,
-      {
-        baseUrl: ''
-      }
-    )
+    this.refreshTokenRequest = http.post<LoginResponseType>(ROUTES.HANDLER.REFRESH_TOKEN, null, {
+      baseUrl: ''
+    })
     const result = await this.refreshTokenRequest
     this.refreshTokenRequest = null
     return result
