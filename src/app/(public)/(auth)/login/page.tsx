@@ -1,13 +1,22 @@
 import React from 'react'
 
 import FormLogin from './FormLogin'
-import LogoutPage from './logout'
+import LogoutComponent from './logout'
 
-const page = () => {
+const page = ({
+  searchParams
+}: {
+  searchParams: {
+    redirect?: string
+    accessToken?: string
+    refreshToken?: string
+    [key: string]: string | undefined
+  }
+}) => {
   return (
     <>
-      <FormLogin />
-      <LogoutPage />
+      <FormLogin searchParams={searchParams} />
+      <LogoutComponent searchParams={searchParams} />
     </>
   )
 }

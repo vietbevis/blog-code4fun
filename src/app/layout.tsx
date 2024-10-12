@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { geistMono, geistSans } from '@/components/fonts'
 import Header from '@/components/header/Header'
 import { Toaster } from '@/components/ui/sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 import AuthProvider from '@/providers/auth-provider'
 import NetworkProvider from '@/providers/network-provider'
@@ -28,18 +29,20 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.className} h-screen overflow-y-scroll antialiased`}
       >
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <NetworkProvider>
-            <QueryProvider>
-              <AuthProvider>
-                <Header />
-                <main>
-                  <div className='h-16 w-full bg-card'></div>
-                  <div className='container'>{children}</div>
-                </main>
-              </AuthProvider>
-            </QueryProvider>
-          </NetworkProvider>
-          <Toaster richColors position='top-center' />
+          <TooltipProvider>
+            <NetworkProvider>
+              <QueryProvider>
+                <AuthProvider>
+                  <Header />
+                  <main>
+                    <div className='h-16 w-full bg-card'></div>
+                    <div className='container'>{children}</div>
+                  </main>
+                </AuthProvider>
+              </QueryProvider>
+            </NetworkProvider>
+            <Toaster richColors position='top-center' />
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

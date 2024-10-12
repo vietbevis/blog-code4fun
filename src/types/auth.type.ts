@@ -151,4 +151,5 @@ export interface PostTypeResponse extends ResponseMainType {
 export type ListPostTypeResponse = PaginatedResponse<PostType>
 export type AccountResponseType = ResponseMainType & { details: AccountType }
 export type TagsResponseType = ResponseMainType & { details: string[] }
+export type ErrorResponseType = ResponseMainType & { error: any }
 export type CategoryResponseType = PaginatedResponse<Category>

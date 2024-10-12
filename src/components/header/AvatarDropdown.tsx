@@ -35,7 +35,7 @@ const AvatarDropdown = () => {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className='rounded-full'>
-        <Avatar>
+        <Avatar className='border border-input'>
           <AvatarImage
             src={`http://code4fun.xyz:9000/commons/${data?.profile.avatarUrl}`}
             alt='@shadcn'
@@ -46,8 +46,8 @@ const AvatarDropdown = () => {
       <DropdownMenuContent align='end'>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem>Billing</DropdownMenuItem>
+        <DropdownMenuItem>{data?.name}</DropdownMenuItem>
+        <DropdownMenuItem>{data?.email}</DropdownMenuItem>
         <DropdownMenuItem>Team</DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
           Logout

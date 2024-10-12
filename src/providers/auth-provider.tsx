@@ -3,6 +3,7 @@
 import React from 'react'
 
 import TokenRefresher from '@/components/TokenRefresher'
+import CustomDialog from '@/components/custom-dialog'
 
 const AuthProvider = ({
   children
@@ -13,6 +14,7 @@ const AuthProvider = ({
     <>
       {children}
       <TokenRefresher />
+      <CustomDialog />
     </>
   )
 }

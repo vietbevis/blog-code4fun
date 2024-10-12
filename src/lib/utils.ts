@@ -116,3 +116,28 @@ export const checkImageURL = (url: string | null | undefined) => {
   }
   return `${envConfig.NEXT_PUBLIC_API_IMAGE}/${url}`
 }
+
+export const convertImageToFormData = async (src: string | string[]) => {
+  const srcArray = Array.isArray(src) ? src : [src]
+  const formData = new FormData()
+
+  await Promise.all(
+    srcArray.map(async (srcItem, index) => {
+      const imgFile = await fetch(srcItem).then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch image from ${srcItem}`)
+        }
+        return response.blob()
+      })
+      const file = new File([imgFile], `image-${index + 1}.jpg`, {
+        type: imgFile.type
+      })
+      formData.append('files', file)
+    })
+  )
+
+  return formData
+}
+
+export const setUrlToLocalStorage = (value: string) =>
+  isBrowser && localStorage.setItem('redirect', value)

@@ -25,7 +25,16 @@ import { getDeviceInfo } from '@/lib/utils'
 
 import Oauth2 from '../Oauth2'
 
-const FormLogin = () => {
+const FormLogin = ({
+  searchParams
+}: {
+  searchParams: {
+    redirect?: string
+    accessToken?: string
+    refreshToken?: string
+    [key: string]: string | undefined
+  }
+}) => {
   const { mutateAsync: login, isPending, error } = useLoginMutation()
   const deviceInfo = getDeviceInfo()
   const router = useRouter()
@@ -42,8 +51,12 @@ const FormLogin = () => {
   async function onSubmit(values: LoginBodyType) {
     try {
       await login(values)
-      router.push(ROUTES.HOME)
-      router.refresh()
+      if (searchParams.redirect) {
+        location.href = decodeURIComponent(searchParams.redirect)
+      } else {
+        router.replace(ROUTES.HOME)
+        router.refresh()
+      }
     } catch (error) {
       console.log('🚀 ~ onSubmit ~ error:', error)
     }

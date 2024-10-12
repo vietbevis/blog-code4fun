@@ -7,6 +7,7 @@ import { useHeadroom } from '@/hooks/useHeadroom'
 
 import { cn } from '@/lib/utils'
 
+import UnauthenicatedWrapper from '../UnauthenicatedWrapper'
 import { IconBook } from '../icons'
 import { Button } from '../ui/button'
 
@@ -25,9 +26,11 @@ const SidebarRight = ({ className }: { className?: string }) => {
         <div className='space-y-2'>
           <h3 className='text-lg font-medium'>Hi, everyone!</h3>
           <p className='text-sm text-muted-foreground'>Share your knowledge with the world</p>
-          <Link href={'/news'} className='inline-block'>
-            <Button>Create Post</Button>
-          </Link>
+          <UnauthenicatedWrapper>
+            <Link href={'/news'} className='inline-block'>
+              <Button>Create Post</Button>
+            </Link>
+          </UnauthenicatedWrapper>
         </div>
         <IconBook className='size-20 shrink-0' />
       </div>

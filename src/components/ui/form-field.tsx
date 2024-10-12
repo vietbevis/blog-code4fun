@@ -1,13 +1,6 @@
 import { Control, FieldValues, Path } from 'react-hook-form'
 
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from './form'
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from './form'
 
 interface FormFieldProps<T extends FieldValues> {
   control: Control<T>
@@ -19,6 +12,8 @@ interface FormFieldProps<T extends FieldValues> {
   placeholder?: string
   description?: string
   autoFocus?: boolean
+  labelClassName?: string
+  maxLength?: number
 }
 
 const FormFields = <T extends FieldValues>({
@@ -30,7 +25,9 @@ const FormFields = <T extends FieldValues>({
   required = false,
   placeholder,
   description = '',
-  autoFocus = false
+  autoFocus = false,
+  labelClassName,
+  maxLength
 }: FormFieldProps<T>) => {
   return (
     <FormField
@@ -38,7 +35,7 @@ const FormFields = <T extends FieldValues>({
       name={name}
       render={({ field, fieldState: { invalid } }) => (
         <FormItem className='space-y-1'>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className={labelClassName}>{label}</FormLabel>
           <FormControl>
             <Component
               {...field}
@@ -46,6 +43,7 @@ const FormFields = <T extends FieldValues>({
               className={className}
               required={required}
               placeholder={placeholder}
+              {...(maxLength && { maxLength })}
             />
           </FormControl>
           <FormDescription>{description}</FormDescription>

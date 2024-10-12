@@ -8,15 +8,7 @@ interface NetworkStatus {
   effectiveType?: 'slow-2g' | '2g' | '3g' | '4g'
   rtt?: number
   saveData?: boolean
-  type?:
-    | 'bluetooth'
-    | 'cellular'
-    | 'ethernet'
-    | 'wifi'
-    | 'wimax'
-    | 'none'
-    | 'other'
-    | 'unknown'
+  type?: 'bluetooth' | 'cellular' | 'ethernet' | 'wifi' | 'wimax' | 'none' | 'other' | 'unknown'
 }
 
 function getConnection(): NetworkStatus {
@@ -26,9 +18,7 @@ function getConnection(): NetworkStatus {
 
   const _navigator = navigator as any
   const connection: any =
-    _navigator.connection ||
-    _navigator.mozConnection ||
-    _navigator.webkitConnection
+    _navigator.connection || _navigator.mozConnection || _navigator.webkitConnection
 
   if (!connection) {
     return {}
@@ -53,12 +43,8 @@ export function useNetwork() {
     []
   )
 
-  useWindowEvent('online', () =>
-    setStatus({ online: true, ...getConnection() })
-  )
-  useWindowEvent('offline', () =>
-    setStatus({ online: false, ...getConnection() })
-  )
+  useWindowEvent('online', () => setStatus({ online: true, ...getConnection() }))
+  useWindowEvent('offline', () => setStatus({ online: false, ...getConnection() }))
 
   useEffect(() => {
     const _navigator = navigator as any
@@ -66,15 +52,10 @@ export function useNetwork() {
     if (_navigator.connection) {
       setStatus({ online: _navigator.onLine, ...getConnection() })
       _navigator.connection.addEventListener('change', handleConnectionChange)
-      return () =>
-        _navigator.connection.removeEventListener(
-          'change',
-          handleConnectionChange
-        )
+      return () => _navigator.connection.removeEventListener('change', handleConnectionChange)
     }
 
     if (typeof _navigator.onLine === 'boolean') {
-      // Required for Firefox and other browsers that don't support navigator.connection
       setStatus((current) => ({ ...current, online: _navigator.onLine }))
     }
 

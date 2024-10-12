@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 import { EKeyToken } from '@/constants/enum'
 import ROUTES from '@/constants/route'
 
-const PROTECTED_PATHS = ['/dashboard', '/profile']
+const PROTECTED_PATHS = ['/news', '/profile']
 const AUTH_PATHS = [ROUTES.LOGIN, ROUTES.REGISTER]
 
 export function middleware(request: NextRequest) {

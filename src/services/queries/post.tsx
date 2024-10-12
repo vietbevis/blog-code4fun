@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import { PostQueryParams, PostType, PostTypeResponse } from '@/types/auth.type'
 
 import PostService from '../post'
+import revalidateApiRequest from '../revalidate'
 
 interface InfinitePosts {
   posts: PostType[]
@@ -148,6 +149,7 @@ export const useCreatePost = () => {
     onSuccess: async (data) => {
       const createdPost = data.payload.details
       const authorUserName = createdPost.createdBy.userName
+      await revalidateApiRequest('feed-posts')
 
       const updatePosts = (oldData: InfiniteData<InfinitePosts> | undefined) => {
         if (!oldData) return oldData

@@ -1,24 +1,29 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 import { useLogoutMutation } from '@/services/queries/auth.query'
 
 import useAuthStore from '@/stores/auth.store'
 
-import { EKeyToken } from '@/constants/enum'
 import ROUTES from '@/constants/route'
 
-import Loading from '@/app/loading'
-
-const LogoutComponent: React.FC = () => {
+const LogoutComponent = ({
+  searchParams
+}: {
+  searchParams: {
+    redirect?: string
+    accessToken?: string
+    refreshToken?: string
+    [key: string]: string | undefined
+  }
+}) => {
   const { mutate } = useLogoutMutation()
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { token } = useAuthStore()
 
-  const tokenFromUrl = searchParams.get(EKeyToken.ACCESS_TOKEN)
+  const tokenFromUrl = searchParams.accessToken || null
   const { accessToken, refreshToken } = token || {}
 
   useEffect(() => {
@@ -26,27 +31,21 @@ const LogoutComponent: React.FC = () => {
       if (tokenFromUrl === accessToken || tokenFromUrl === refreshToken) {
         try {
           mutate()
-          router.replace(ROUTES.LOGIN)
+          location.reload()
         } catch (error) {
           console.log('🚀 ~ file: logout.tsx:31 ~ performLogout ~ error:', error)
         }
       } else {
-        router.replace(ROUTES.LOGIN)
+        if (!searchParams.redirect) {
+          router.replace(ROUTES.LOGIN)
+        }
       }
     }
 
     performLogout()
-  }, [tokenFromUrl, accessToken, refreshToken, router, mutate])
+  }, [tokenFromUrl, accessToken, refreshToken, router, mutate, searchParams.redirect])
 
   return null
 }
 
-const LogoutPage: React.FC = () => {
-  return (
-    <React.Suspense fallback={<Loading />}>
-      <LogoutComponent />
-    </React.Suspense>
-  )
-}
-
-export default LogoutPage
+export default LogoutComponent

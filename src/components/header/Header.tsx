@@ -94,9 +94,6 @@ const Header = React.memo(() => {
                   <Button size='icon' variant='outline' className='shrink-0 rounded-full'>
                     <Icon name='Bell' className='size-5' />
                   </Button>
-                  <Button size='icon' variant='outline' className='shrink-0 rounded-full'>
-                    <Icon name='MessageCircle' className='size-5' />
-                  </Button>
                   <AvatarDropdown />
                 </>
               ) : (
