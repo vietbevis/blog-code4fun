@@ -47,7 +47,7 @@ const Header = React.memo(() => {
       className={`${headerStyles.base} ${pinned ? headerStyles.pinned : headerStyles.unpinned}`}
     >
       <div className='container grid size-full grid-cols-2 items-center gap-2 md:grid-cols-4 md:gap-3'>
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center gap-1 md:gap-2'>
           <Sheet>
             <SheetTrigger asChild className='rounded-full md:hidden'>
               <Button variant={'outline'} size={'icon'} className='rounded-full'>
@@ -91,9 +91,9 @@ const Header = React.memo(() => {
               <ModeToggle />
               {isAuth ? (
                 <>
-                  <Button size='icon' variant='outline' className='shrink-0 rounded-full'>
+                  {/* <Button size='icon' variant='outline' className='shrink-0 rounded-full'>
                     <Icon name='Bell' className='size-5' />
-                  </Button>
+                  </Button> */}
                   <AvatarDropdown />
                 </>
               ) : (

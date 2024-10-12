@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { createJSONStorage, persist } from 'zustand/middleware'
+import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 import { LoginResponseType, RoleType } from '@/types/auth.type'
 
@@ -14,21 +14,23 @@ interface AuthState {
 }
 
 const useAuthStore = create<AuthState>()(
-  persist<AuthState>(
-    (set) => ({
-      isAuth: false,
-      token: null,
-      roles: [],
-      login: (token: LoginResponseType) => {
-        const decodedToken = decodeToken(token.accessToken)
-        set({ isAuth: true, token, roles: decodedToken.roles })
-      },
-      logout: () => set({ isAuth: false, token: null, roles: [] })
-    }),
-    {
-      name: 'auth-storage',
-      storage: createJSONStorage(() => localStorage)
-    }
+  devtools(
+    persist<AuthState>(
+      (set) => ({
+        isAuth: false,
+        token: null,
+        roles: [],
+        login: (token: LoginResponseType) => {
+          const decodedToken = decodeToken(token.accessToken)
+          set({ isAuth: true, token, roles: decodedToken.roles })
+        },
+        logout: () => set({ isAuth: false, token: null, roles: [] })
+      }),
+      {
+        name: 'auth-storage',
+        storage: createJSONStorage(() => localStorage)
+      }
+    )
   )
 )
 

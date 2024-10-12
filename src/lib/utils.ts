@@ -104,9 +104,10 @@ export const checkAndRefreshToken = async (param?: {
 
 export function formatDate(date: string) {
   dayjs.extend(relativeTime)
-  const commentTime = dayjs(date).fromNow()
+  const commentTime = dayjs(date).format('MMMM D, YYYY h:mm A')
   return commentTime
 }
+
 export const checkImageURL = (url: string | null | undefined) => {
   if (!url) {
     return '/avatar-default.png'

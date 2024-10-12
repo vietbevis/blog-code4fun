@@ -1,4 +1,3 @@
-/* eslint-disable unused-imports/no-unused-vars */
 'use client'
 
 import * as React from 'react'
@@ -9,26 +8,19 @@ import { cn } from '@/lib/utils'
 
 import Icon from './icon'
 
-/* eslint-disable unused-imports/no-unused-vars */
-
-/* eslint-disable unused-imports/no-unused-vars */
-
 export function formatBytes(
   bytes: number,
-  opts: {
-    decimals?: number
-    sizeType?: 'accurate' | 'normal'
-  } = {}
+  {
+    decimals = 0,
+    sizeType = 'normal'
+  }: { decimals?: number; sizeType?: 'accurate' | 'normal' } = {}
 ) {
-  const { decimals = 0, sizeType = 'normal' } = opts
-
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
-  const accurateSizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB']
-  if (bytes === 0) return '0 Byte'
+  const sizes =
+    sizeType === 'accurate'
+      ? ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB']
+      : ['Bytes', 'KB', 'MB', 'GB', 'TB']
   const i = Math.floor(Math.log(bytes) / Math.log(1024))
-  return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
-    sizeType === 'accurate' ? (accurateSizes[i] ?? 'Bytest') : (sizes[i] ?? 'Bytes')
-  }`
+  return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${sizes[i] || 'Bytes'}`
 }
 
 interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -42,26 +34,19 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
   setImageSelect: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
-export function FileUploader(props: FileUploaderProps) {
-  const {
-    value: valueProp,
-    onValueChange,
-    onUpload,
-    accept = {
-      'image/*': []
-    },
-    maxSize = 1024 * 1024, // 1MB
-    maxFileCount = 1,
-    disabled = false,
-    className,
-    setImageSelect,
-    ...dropzoneProps
-  } = props
-
+export function FileUploader({
+  accept = { 'image/*': [] },
+  maxSize = 1024 * 1024, // 1MB
+  maxFileCount = 1,
+  disabled = false,
+  setImageSelect,
+  onUpload,
+  ...dropzoneProps
+}: FileUploaderProps) {
   const onDrop = React.useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-      if (acceptedFiles.length > 1) {
-        toast.error('Cannot upload more than 1 file at a time')
+      if (acceptedFiles.length > maxFileCount) {
+        toast.error(`Cannot upload more than ${maxFileCount} files`)
         return
       }
 
@@ -71,13 +56,12 @@ export function FileUploader(props: FileUploaderProps) {
         })
       }
 
-      setImageSelect(URL.createObjectURL(acceptedFiles[0]))
-
-      if (onUpload) {
-        onUpload(acceptedFiles)
+      if (acceptedFiles.length > 0) {
+        setImageSelect(URL.createObjectURL(acceptedFiles[0]))
+        onUpload?.(acceptedFiles)
       }
     },
-    [onUpload, setImageSelect]
+    [onUpload, setImageSelect, maxFileCount]
   )
 
   return (
@@ -86,45 +70,31 @@ export function FileUploader(props: FileUploaderProps) {
         onDrop={onDrop}
         accept={accept}
         maxSize={maxSize}
-        maxFiles={10}
-        multiple={true}
+        multiple={false}
         disabled={disabled}
+        {...dropzoneProps}
       >
         {({ getRootProps, getInputProps, isDragActive }) => (
           <div
             {...getRootProps()}
             className={cn(
               'group relative grid h-52 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25',
-              'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               isDragActive && 'border-muted-foreground/50',
-              disabled && 'pointer-events-none opacity-60',
-              className
+              disabled && 'pointer-events-none opacity-60'
             )}
-            {...dropzoneProps}
           >
             <input {...getInputProps()} />
-            {isDragActive ? (
-              <div className='flex flex-col items-center justify-center gap-4 sm:px-5'>
-                <div className='rounded-full border border-dashed p-3'>
-                  <Icon name='Upload' className='size-7 text-muted-foreground' aria-hidden='true' />
-                </div>
-                <p className='font-medium text-muted-foreground'>Drop the files here</p>
+            <div className='flex flex-col items-center justify-center gap-4 sm:px-5'>
+              <div className='rounded-full border border-dashed p-3'>
+                <Icon name='Upload' className='size-7 text-muted-foreground' aria-hidden='true' />
               </div>
-            ) : (
-              <div className='flex flex-col items-center justify-center gap-4 sm:px-5'>
-                <div className='rounded-full border border-dashed p-3'>
-                  <Icon name='Upload' className='size-7 text-muted-foreground' aria-hidden='true' />
-                </div>
-                <div className='flex flex-col gap-px'>
-                  <p className='font-medium text-muted-foreground'>
-                    Drag {`'n'`} drop thumbnails here, or click to select thumbnails
-                  </p>
-                  <p className='text-sm text-muted-foreground/70'>
-                    You can upload a image with ${formatBytes(maxSize)}
-                  </p>
-                </div>
-              </div>
-            )}
+              <p className='font-medium text-muted-foreground'>
+                Drag {'n'} drop thumbnails here, or click to select thumbnails
+              </p>
+              <p className='text-sm text-muted-foreground/70'>
+                You can upload an image with {formatBytes(maxSize)}
+              </p>
+            </div>
           </div>
         )}
       </Dropzone>

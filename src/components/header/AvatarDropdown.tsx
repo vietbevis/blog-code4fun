@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
@@ -17,6 +18,31 @@ import { useAccountMe } from '@/services/queries/account.query'
 import { useLogoutMutation } from '@/services/queries/auth.query'
 
 import ROUTES from '@/constants/route'
+
+import { checkImageURL } from '@/lib/utils'
+
+import Icon from '../ui/icon'
+
+const menuDropdownUser = [
+  // {
+  //   id: "dashboard",
+  //   label: "Dashboard",
+  //   icons: <Icon name="LayoutDashboard" strokeWidth={2} />,
+  //   url: "/dashboard",
+  // },
+  {
+    id: 'create-post',
+    label: 'Create post',
+    icons: <Icon name='BadgePlus' strokeWidth={2} />,
+    url: ROUTES.NEWS
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    icons: <Icon name='Settings' strokeWidth={2} />,
+    url: ROUTES.PROFILE
+  }
+]
 
 const AvatarDropdown = () => {
   const { data } = useAccountMe()
@@ -36,20 +62,32 @@ const AvatarDropdown = () => {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className='rounded-full'>
         <Avatar className='border border-input'>
-          <AvatarImage
-            src={`http://code4fun.xyz:9000/commons/${data?.profile.avatarUrl}`}
-            alt='@shadcn'
-          />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={checkImageURL(data?.profile.avatarUrl)} alt='avatar' />
+          <AvatarFallback>{data?.name.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuContent align='end' className='w-72 p-2'>
+        <DropdownMenuLabel>
+          <Link href={ROUTES.PROFILE}>
+            <p className='line-clamp-1 text-lg font-semibold'>{data?.name}</p>
+            <p className='line-clamp-1 text-muted-foreground'>@{data?.userName}</p>
+          </Link>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>{data?.name}</DropdownMenuItem>
-        <DropdownMenuItem>{data?.email}</DropdownMenuItem>
-        <DropdownMenuItem>Team</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
+        {menuDropdownUser.map((item) => (
+          <Link href={item.url} key={item.id}>
+            <DropdownMenuItem className='flex items-center gap-2'>
+              {item.icons}
+              {item.label}
+            </DropdownMenuItem>
+          </Link>
+        ))}
+        <DropdownMenuItem
+          onClick={handleLogout}
+          disabled={isPending}
+          className='flex items-center gap-2'
+        >
+          <Icon name='LogOut' strokeWidth={2} />
           Logout
         </DropdownMenuItem>
       </DropdownMenuContent>

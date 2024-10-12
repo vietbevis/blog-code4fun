@@ -254,7 +254,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className='w-auto p-0'
+          className='max-h-[--radix-popover-content-available-height] w-[--radix-popover-trigger-width] p-0'
           align='start'
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >

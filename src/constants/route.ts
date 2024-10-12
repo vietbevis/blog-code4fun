@@ -4,6 +4,8 @@ const ROUTES = {
   LOGOUT: '/logout',
   REGISTER: '/register',
   REFRESH_TOKEN: '/refresh-token',
+  PROFILE: '/settings',
+  NEWS: '/news',
   BACKEND: {
     // Auth routes
     LOGIN: 'auth/signin',

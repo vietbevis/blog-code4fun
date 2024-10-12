@@ -1,4 +1,4 @@
-import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query'
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 import Image from 'next/image'
 import React from 'react'
 
@@ -7,12 +7,14 @@ import SidebarRight from '@/components/sidebars/SidebarRight'
 
 import PostService from '@/services/post'
 
+import { getQueryClient } from '@/lib/getQueryClient'
+
 const layout = async ({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) => {
-  const queryClient = new QueryClient()
+  const queryClient = getQueryClient()
   await queryClient.prefetchQuery({
     queryKey: ['tags'],
     queryFn: PostService.getTags
