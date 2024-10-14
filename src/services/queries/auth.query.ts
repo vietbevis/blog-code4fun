@@ -47,11 +47,12 @@ export const useLogoutMutation = () => {
 }
 
 export const useLoginGoogleMutation = () => {
-  const queryClient = useQueryClient()
+  const login = useAuthStore((state) => state.login)
   return useMutation({
     mutationFn: AuthService.loginGoogle,
-    onSuccess: () => {
-      queryClient.refetchQueries({ queryKey: [EKeyQuery.ACCOUNT_ME] })
+    onSuccess: (data) => {
+      login(data.payload)
+      toast.success('Login successfully!')
     }
   })
 }

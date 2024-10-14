@@ -20,6 +20,7 @@ const ROUTES = {
     FOLLOW_USER: 'followers',
     GET_USER: 'public/users/byUserName',
     UPDATE_PROFILE: 'users/user-update',
+    TOP_USERS: 'public/posts/users/top-posters',
 
     // Category routes
     CATEGORY: 'public/category',

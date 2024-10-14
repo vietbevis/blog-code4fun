@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { MinimalTiptapEditor } from '@/components/minimal-tiptap'
+import { OptimizedFileUploader } from '@/components/ui/OptimizedFileUploader'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -30,7 +31,6 @@ import { Input } from '@/components/ui/input'
 import { MultiSelect } from '@/components/ui/multi-select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
-import { UploadedFilesCard } from '@/components/ui/uploaded-files-card'
 
 import { useCreatePost } from '@/services/queries/post'
 
@@ -43,7 +43,7 @@ import { FormNewPostSchema, NewPostBodyType } from '@/schemas/auth.schema'
 
 import ROUTES from '@/constants/route'
 
-import { cn } from '@/lib/utils'
+import { cn, replaceSpecialChars } from '@/lib/utils'
 
 const FormNewPost = ({ tags, categories }: { tags: string[]; categories: Category[] }) => {
   const { mutateAsync: createPostMutation } = useCreatePost()
@@ -86,7 +86,7 @@ const FormNewPost = ({ tags, categories }: { tags: string[]; categories: Categor
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <UploadedFilesCard onChange={field.onChange} value={field.value} />
+                  <OptimizedFileUploader onChange={field.onChange} value={field.value} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -179,7 +179,7 @@ const FormNewPost = ({ tags, categories }: { tags: string[]; categories: Categor
                     maxCount={5}
                     variant='inverted'
                     options={tags.map((tag) => ({
-                      value: tag,
+                      value: replaceSpecialChars(tag),
                       label: tag
                     }))}
                     onValueChange={field.onChange}

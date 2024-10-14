@@ -104,7 +104,7 @@ export const checkAndRefreshToken = async (param?: {
 
 export function formatDate(date: string) {
   dayjs.extend(relativeTime)
-  const commentTime = dayjs(date).format('MMMM D, YYYY h:mm A')
+  const commentTime = dayjs(date).format('MMMM D, YYYY')
   return commentTime
 }
 
@@ -142,3 +142,18 @@ export const convertImageToFormData = async (src: string | string[]) => {
 
 export const setUrlToLocalStorage = (value: string) =>
   isBrowser && localStorage.setItem('redirect', value)
+
+export const replaceImageSrc = (content: string) => {
+  return content.replace(/<img\s+([^>]*?)src="([^"]*?)"([^>]*?)>/g, (match, p1, p2, p3) => {
+    if (p2.startsWith('http')) {
+      return match
+    } else {
+      const newSrc = `${envConfig.NEXT_PUBLIC_API_IMAGE}/${p2}`
+      return `<img ${p1}src="${newSrc}"${p3}>`
+    }
+  })
+}
+
+export function replaceSpecialChars(str: string) {
+  return str.replace(/[^a-zA-Z0-9]/g, '_')
+}

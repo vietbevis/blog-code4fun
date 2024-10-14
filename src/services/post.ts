@@ -9,15 +9,16 @@ import {
 
 import { NewPostBodyType } from '@/schemas/auth.schema'
 
+import { EKeyQuery } from '@/constants/enum'
 import ROUTES from '@/constants/route'
 
 import http from '@/lib/http'
 
 const PostService = {
-  getDetail: (slug: string, userName?: string) =>
+  getDetail: (slug: string) =>
     http.get<PostTypeResponse>(`${ROUTES.BACKEND.POST_DETAIL}/${slug}`, {
       next: {
-        tags: userName ? [slug, userName] : [slug]
+        tags: [slug]
       }
     }),
   getDetailById: (id: string) =>
@@ -61,7 +62,7 @@ const PostService = {
           }
         : {
             next: {
-              tags: ['feed-posts']
+              tags: [EKeyQuery.FEED_POSTS]
             }
           }
     )

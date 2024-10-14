@@ -62,7 +62,7 @@ const AvatarDropdown = () => {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className='rounded-full'>
         <Avatar className='border border-input'>
-          <AvatarImage src={checkImageURL(data?.profile.avatarUrl)} alt='avatar' />
+          <AvatarImage src={checkImageURL(data?.profile?.avatarUrl)} alt='avatar' />
           <AvatarFallback>{data?.name.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

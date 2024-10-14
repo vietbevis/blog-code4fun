@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import React from 'react'
 
 import { buttonVariants } from '@/components/ui/button'
@@ -17,12 +20,14 @@ const ItemSidebarLeft = ({
     url: string
   }
 }) => {
+  const pathname = usePathname()
   return (
     <Link
       href={data.url}
       className={cn(
         buttonVariants({ variant: 'ghost' }),
         'w-full justify-start gap-2 rounded-md px-4 py-2 text-base transition-colors duration-0 hover:bg-primary/10',
+        pathname === data.url && 'bg-primary/10',
         className
       )}
     >

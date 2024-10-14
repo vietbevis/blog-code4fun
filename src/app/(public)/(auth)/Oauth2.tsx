@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { Button } from '@/components/ui/button'
+import LoginGoogle from '@/components/buttons/LoginGoogle'
 
 const Oauth2 = () => {
   return (
     <>
       <div className='flex items-center justify-center gap-2'>
-        <Button className='w-full'>Google</Button>
-        <Button className='w-full'>Github</Button>
+        <LoginGoogle />
+        {/* <Button className='w-full'>Github</Button> */}
       </div>
       <div className='flex items-center justify-center gap-2 text-sm text-muted-foreground'>
         <div className='h-px w-full bg-muted-foreground'></div>

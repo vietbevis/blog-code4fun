@@ -148,8 +148,18 @@ export interface PostTypeResponse extends ResponseMainType {
   details: PostType
 }
 
+export interface TopUserType {
+  userId: string
+  username: string
+  postCount: number
+  totalFavorites: number
+  followType: string
+  avatarUrl: string
+}
+
 export type ListPostTypeResponse = PaginatedResponse<PostType>
 export type AccountResponseType = ResponseMainType & { details: AccountType }
+export type TopUsersResponseType = ResponseMainType & { details: TopUserType[] }
 export type TagsResponseType = ResponseMainType & { details: string[] }
 export type ErrorResponseType = ResponseMainType & { error: any }
 export type CategoryResponseType = PaginatedResponse<Category>

@@ -1,36 +1,52 @@
+/* eslint-disable tailwindcss/migration-from-tailwind-2 */
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
 import { PostType } from '@/types/auth.type'
 
-import { checkImageURL, cn, formatDate } from '@/lib/utils'
+import { checkImageURL, formatDate } from '@/lib/utils'
 
-import { IconComment, IconSave, IconSparkleHeart } from '../icons'
-import { Button, buttonVariants } from '../ui/button'
+import InfoHover from '../ui/InfoHover'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Button } from '../ui/button'
 
 const Post = ({ data }: { data: PostType }) => {
   return (
     <div className='w-full space-y-4 rounded-lg border border-input bg-card p-4'>
       <div className='flex flex-1 flex-col-reverse items-center justify-between gap-2 sm:flex-row'>
         <div className='w-full'>
-          <div className='mt-2 sm:ml-8'>
+          <div className='flex items-center gap-1'>
+            <InfoHover data={data.createdBy}>
+              <Avatar className='size-8'>
+                <AvatarImage src={checkImageURL(data.createdBy.profile?.avatarUrl)} />
+                <AvatarFallback>{data.createdBy.name.charAt(0).toUpperCase()}</AvatarFallback>
+              </Avatar>
+            </InfoHover>
+            <div className='flex flex-col'>
+              <InfoHover
+                data={data.createdBy}
+                className='cursor-pointer rounded-md px-1 hover:bg-background'
+              >
+                <h3 className='cursor-pointer text-base font-bold'>{data.createdBy.name}</h3>
+              </InfoHover>
+              <span className='px-1 text-xs text-muted-foreground'>
+                {formatDate(data.createdDate)}
+              </span>
+            </div>
+          </div>
+          <div className='mt-2 sm:ml-9'>
             {/* Title */}
             <Link
               href={`/${data.createdBy.userName}/${data.slug}`}
-              className='line-clamp-3 break-all text-xl font-bold'
+              className='line-clamp-3 break-all text-2xl font-bold'
             >
               {data.title}
             </Link>
-            <span className='text-xs text-muted-foreground'>{formatDate(data.createdDate)}</span>
             {/* Description */}
             <p className='mt-2 line-clamp-2 break-all text-sm text-muted-foreground sm:line-clamp-3 sm:text-base'>
               {data.shortDescription}
             </p>
-            {/* Tags */}
-            {/* <div className="my-4 mb-2 flex flex-wrap gap-1">
-              <ListTags data={data.tags} />
-            </div> */}
           </div>
         </div>
         <div className='aspect-video size-full max-h-60 shrink-0 overflow-hidden rounded-md sm:w-40 md:w-48 lg:w-56'>
@@ -44,8 +60,17 @@ const Post = ({ data }: { data: PostType }) => {
         </div>
       </div>
 
+      <div className='flex items-center gap-3 sm:ml-9'>
+        <Button variant={'outline'} size={'sm'} className='rounded-full opacity-50'>
+          {data.category.name}
+        </Button>
+        <Button variant={'outline'} size={'sm'} className='rounded-full opacity-50'>
+          4 min read
+        </Button>
+      </div>
+
       {/* Like, Comments, Save */}
-      <div className='flex items-center gap-2 sm:ml-7'>
+      {/* <div className='flex items-center gap-2 sm:ml-7'>
         <Link
           title='Like'
           href={`/${data.createdBy.userName}/${data.slug}`}
@@ -70,11 +95,11 @@ const Post = ({ data }: { data: PostType }) => {
           <span>{data.totalComments}</span>
           <span className='hidden sm:inline'>Comments</span>
         </Link>
-        {/* <p className="ml-auto text-sm">Save</p> */}
+        <p className="ml-auto text-sm">Save</p>
         <Button variant={'ghost'} size={'icon'} title='Save' className='ml-auto'>
           <IconSave />
         </Button>
-      </div>
+      </div> */}
     </div>
   )
 }

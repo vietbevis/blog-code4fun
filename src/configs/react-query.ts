@@ -7,6 +7,7 @@ import {
 export const queryConfig = {
   queries: {
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
     retry: false,
     staleTime: 1000 * 60
   },

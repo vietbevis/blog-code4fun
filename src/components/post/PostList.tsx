@@ -4,18 +4,33 @@ import React from 'react'
 
 import { useInfiniteScrollPosts } from '@/services/queries/post'
 
+import { PostQueryParams } from '@/types/auth.type'
+
 import PostSkeleton from '../skeletons/PostSkeleton'
 import InfiniteScrollContainer from '../ui/infinite-scoll-container'
 import Post from './Post'
 
-const PostList = () => {
+const PostList = ({ params }: { params?: PostQueryParams }) => {
   const { data, error, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } =
-    useInfiniteScrollPosts()
-
+    useInfiniteScrollPosts(params)
   const posts = data ? data.pages.flatMap((page) => page.posts) : []
 
+  if (status === 'pending') {
+    return (
+      <div className='flex w-full flex-1 flex-col gap-4'>
+        {Array.from({ length: 5 }).map((_, index) => (
+          <PostSkeleton key={index} />
+        ))}
+      </div>
+    )
+  }
+
   if (status === 'error') {
-    return <div>Error: {error.message}</div>
+    return (
+      <div className='w-full rounded-lg border border-input bg-card p-4 text-center text-3xl font-bold'>
+        Error: {error.message}
+      </div>
+    )
   }
 
   if (posts.length === 0) {

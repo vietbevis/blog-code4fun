@@ -1,6 +1,5 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import {
-  InfiniteData,
   QueryKey,
   useInfiniteQuery,
   useMutation,
@@ -9,23 +8,18 @@ import {
 } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { PostQueryParams, PostType, PostTypeResponse } from '@/types/auth.type'
+import { PostQueryParams, PostTypeResponse } from '@/types/auth.type'
+
+import { EKeyQuery } from '@/constants/enum'
 
 import PostService from '../post'
 import revalidateApiRequest from '../revalidate'
-
-interface InfinitePosts {
-  posts: PostType[]
-  nextPage: number
-  totalPage: number
-}
 
 export const useDetailPost = ({ slug }: { slug: string }) => {
   return useQuery({
     queryKey: ['post-detail', slug],
     queryFn: () => PostService.getDetail(slug),
-    select: (data) => data.payload.details,
-    refetchOnMount: false
+    select: (data) => data.payload.details
   })
 }
 
@@ -33,8 +27,7 @@ export const useDetailPostById = ({ postId }: { postId: string }) => {
   return useQuery({
     queryKey: ['post-detail', postId],
     queryFn: () => PostService.getDetailById(postId),
-    select: (data) => data.payload.details,
-    refetchOnMount: false
+    select: (data) => data.payload.details
   })
 }
 
@@ -52,27 +45,10 @@ export const useLikePost = ({ slug }: { slug: string }) => {
         payload: PostTypeResponse
       }>(queryKeyDetail)
 
-      const createdByUserName = previousDetailState?.payload.details.createdBy.userName
-
-      const updatePostData = (data: any, slug: string) => {
-        if (!data) return data
-        return {
-          ...data,
-          pages: data.pages.map((page: any) => ({
-            ...page,
-            posts: page.posts.map((post: any) =>
-              post.slug === slug
-                ? {
-                    ...post,
-                    favoriteType: post.favoriteType === 'LIKE' ? 'UNLIKE' : 'LIKE',
-                    favourite:
-                      post.favoriteType === 'LIKE' ? post.favourite - 1 : post.favourite + 1
-                  }
-                : post
-            )
-          }))
-        }
-      }
+      await Promise.all([
+        revalidateApiRequest(EKeyQuery.FEED_POSTS),
+        revalidateApiRequest(previousDetailState?.payload.details.createdBy.userName || '')
+      ])
 
       // Cập nhật chi tiết bài viết
       queryClient.setQueryData(queryKeyDetail, () => {
@@ -94,39 +70,12 @@ export const useLikePost = ({ slug }: { slug: string }) => {
         }
       })
 
-      // Cập nhật danh sách bài viết (feed chung và feed của author)
-      // const queryKeyInfinite: QueryKey = ["feed-posts"];
-      // const queryKeyAuthorPage: QueryKey = ["feed-posts", createdByUserName];
-
-      // const previousInfiniteState =
-      //   queryClient.getQueryData<InfiniteData<InfinitePosts>>(queryKeyInfinite);
-
-      // const previousAuthorPageState =
-      //   queryClient.getQueryData<InfiniteData<InfinitePosts>>(
-      //     queryKeyAuthorPage,
-      //   );
-
-      // queryClient.setQueryData(queryKeyInfinite, (oldData) =>
-      //   updatePostData(oldData, slug),
-      // );
-      // queryClient.setQueryData(queryKeyAuthorPage, (oldData) =>
-      //   updatePostData(oldData, slug),
-      // );
-
       return {
         previousDetailState
-        // previousInfiniteState,
-        // previousAuthorPageState,
-        // queryKeyAuthorPage,
       }
     },
     onError: (error, variables, context) => {
       queryClient.setQueryData(queryKeyDetail, context?.previousDetailState)
-      // queryClient.setQueryData(["feed-posts"], context?.previousInfiniteState);
-      // queryClient.setQueryData(
-      //   context?.queryKeyAuthorPage as QueryKey,
-      //   context?.previousAuthorPageState,
-      // );
       toast.error('Error', {
         description: error.message
       })
@@ -134,42 +83,14 @@ export const useLikePost = ({ slug }: { slug: string }) => {
   })
 }
 
-export const usePosts = () => {
-  return useQuery({
-    queryKey: ['posts-feed'],
-    queryFn: PostService.getFeedPost
-  })
-}
-
 export const useCreatePost = () => {
-  const queryClient = useQueryClient()
-
   return useMutation({
     mutationFn: PostService.createPost,
     onSuccess: async (data) => {
-      const createdPost = data.payload.details
-      const authorUserName = createdPost.createdBy.userName
-      await revalidateApiRequest('feed-posts')
-
-      const updatePosts = (oldData: InfiniteData<InfinitePosts> | undefined) => {
-        if (!oldData) return oldData
-        return {
-          ...oldData,
-          pages: oldData.pages.map((page) => ({
-            ...page,
-            posts: [createdPost, ...page.posts]
-          }))
-        }
-      }
-
-      // Cập nhật danh sách bài viết chung
-      queryClient.setQueryData<InfiniteData<InfinitePosts>>(['feed-posts'], updatePosts)
-
-      // Cập nhật danh sách bài viết trên trang của author
-      queryClient.setQueryData<InfiniteData<InfinitePosts>>(
-        ['feed-posts', authorUserName],
-        updatePosts
-      )
+      await Promise.all([
+        revalidateApiRequest(EKeyQuery.FEED_POSTS),
+        revalidateApiRequest(data.payload.details.createdBy.userName)
+      ])
     },
     onError: (error) => {
       toast.error('Error', {
@@ -181,19 +102,17 @@ export const useCreatePost = () => {
 
 export const useTags = () => {
   return useQuery({
-    queryKey: ['tags'],
+    queryKey: [EKeyQuery.TAGS],
     queryFn: PostService.getTags
-    // refetchOnMount: false,
   })
 }
 
 export const useInfiniteScrollPosts = (params?: PostQueryParams) => {
   return useInfiniteQuery({
     queryKey: [
-      'feed-posts',
+      EKeyQuery.FEED_POSTS,
       ...Object.values(params || {}).filter((value) => value !== undefined && value !== null)
     ],
-    refetchOnMount: false,
     queryFn: async ({ pageParam }) => {
       const { payload } = await PostService.getPostsByFilters({
         ...params,
@@ -220,7 +139,8 @@ export const useSearchPosts = (query: string) => {
   })
 }
 
-export const useInfiniteScrollSearchPosts = (query: string) => {
+export const useInfiniteScrollSearchPosts = (query?: string) => {
+  query = query || ''
   return useInfiniteQuery({
     queryKey: ['search-posts', query],
     refetchOnMount: false,

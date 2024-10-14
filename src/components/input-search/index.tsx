@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { KeyboardEvent, Suspense, useEffect, useRef, useState } from 'react'
 
-import { useSearchPosts } from '@/services/queries/post'
+import { useInfiniteScrollSearchPosts } from '@/services/queries/post'
 
 import { useClickOutside } from '@/hooks/useClickOutside'
 import { useDebouncedCallback } from '@/hooks/useDebouncedCallback'
@@ -14,6 +14,7 @@ import { cn, formatDate } from '@/lib/utils'
 
 import { Button } from '../ui/button'
 import Icon from '../ui/icon'
+import InfiniteScrollContainer from '../ui/infinite-scoll-container'
 import { Input } from '../ui/input'
 
 const InputSearchComponent = ({ className }: { className?: string }) => {
@@ -42,8 +43,9 @@ const InputSearchComponent = ({ className }: { className?: string }) => {
     setSelectedIndex(-1)
   }, 500)
 
-  const { data, isPending } = useSearchPosts(query)
-  const posts = data?.payload?.details?.records || []
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } =
+    useInfiniteScrollSearchPosts(query)
+  const posts = data ? data.pages.flatMap((page) => page.posts) : []
   const showPopover = !pathname.startsWith('/search') && query && open
 
   useWindowEvent('scroll', () => {
@@ -117,31 +119,47 @@ const InputSearchComponent = ({ className }: { className?: string }) => {
             className='absolute inset-x-0 top-full mt-1 overflow-hidden rounded-lg border border-input bg-card shadow-md'
           >
             <div className='flex max-h-96 flex-col divide-y divide-input overflow-y-auto'>
-              {isPending && (
+              {status === 'pending' && (
                 <div className='grid place-items-center p-4'>
                   <Icon name='LoaderCircle' className='animate-spin' />
                 </div>
               )}
-              {!isPending && posts.length === 0 && (
+              {status !== 'pending' && posts.length === 0 && (
                 <div className='p-4 text-center text-muted-foreground'>No results</div>
               )}
-              {!isPending &&
-                posts.length > 0 &&
-                posts.map((post, index) => (
-                  <Link
-                    href={`/${post.createdBy.userName}/${post.slug}`}
-                    key={post.id}
-                    className={cn(
-                      'px-3 py-2',
-                      index === selectedIndex && 'bg-accent text-accent-foreground'
-                    )}
-                    onClick={() => setOpen(false)}
-                  >
-                    <p className='text-sm text-muted-foreground'>@{post.createdBy.userName}</p>
-                    <h3 className='text-base font-bold'>{post.title}</h3>
-                    <p className='text-sm text-muted-foreground'>{formatDate(post.createdDate)}</p>
-                  </Link>
-                ))}
+              {status !== 'pending' && posts.length > 0 && (
+                <InfiniteScrollContainer
+                  className='flex flex-col gap-4'
+                  onBottomReached={() => {
+                    if (hasNextPage && !isFetching) {
+                      fetchNextPage()
+                    }
+                  }}
+                >
+                  {posts.map((post, index) => (
+                    <Link
+                      href={`/${post.createdBy.userName}/${post.slug}`}
+                      key={post.id}
+                      className={cn(
+                        'px-3 py-2',
+                        index === selectedIndex && 'bg-accent text-accent-foreground'
+                      )}
+                      onClick={() => setOpen(false)}
+                    >
+                      <p className='text-sm text-muted-foreground'>@{post.createdBy.userName}</p>
+                      <h3 className='text-base font-bold'>{post.title}</h3>
+                      <p className='text-sm text-muted-foreground'>
+                        {formatDate(post.createdDate)}
+                      </p>
+                    </Link>
+                  ))}
+                  {isFetchingNextPage && (
+                    <div className='grid place-items-center p-4'>
+                      <Icon name='LoaderCircle' className='animate-spin' />
+                    </div>
+                  )}
+                </InfiniteScrollContainer>
+              )}
             </div>
           </div>
         )}

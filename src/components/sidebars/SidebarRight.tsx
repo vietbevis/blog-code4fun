@@ -13,6 +13,7 @@ import { Button } from '../ui/button'
 
 const SidebarRight = ({ className }: { className?: string }) => {
   const pinned = useHeadroom({ fixedAt: 80 })
+
   return (
     <div
       className={cn(
