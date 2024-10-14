@@ -91,6 +91,7 @@ const request = async <Response>(
     status: response.status,
     payload
   }
+  console.log('🚀 ~ file: http.ts:94 ~ data:', data)
 
   if (!response.ok) {
     if (response.status === 401) {

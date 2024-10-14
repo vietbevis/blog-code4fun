@@ -16,6 +16,8 @@ import { PasswordInput } from '@/components/ui/password-input'
 
 import { useRegisterMutation } from '@/services/queries/auth.query'
 
+import useLoadingStore from '@/stores/loading'
+
 import { FormRegisterSchema, RegisterBodyType } from '@/schemas'
 
 import ROUTES from '@/constants/route'
@@ -24,6 +26,7 @@ import Oauth2 from '../Oauth2'
 
 const FormRegister = () => {
   const { mutateAsync: register, isPending, error } = useRegisterMutation()
+  const { isLoading } = useLoadingStore()
 
   const form = useForm<RegisterBodyType>({
     resolver: zodResolver(FormRegisterSchema),
@@ -35,6 +38,7 @@ const FormRegister = () => {
   })
 
   async function onSubmit(values: RegisterBodyType) {
+    if (isLoading || isPending) return
     try {
       await register(values)
     } catch (error) {
@@ -86,7 +90,7 @@ const FormRegister = () => {
             <p className='cursor-pointer text-right text-sm text-muted-foreground transition-colors hover:text-black hover:underline dark:hover:text-white'>
               Forgot password?
             </p>
-            <Button type='submit' className='w-full' loading={isPending}>
+            <Button type='submit' className='w-full' loading={isLoading || isPending}>
               Register
             </Button>
           </form>

@@ -1,41 +1,23 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 
 import { useLoginGoogleMutation } from '@/services/queries/auth.query'
 
 import { OAuthConfig } from '@/configs/OAuthConfig'
 
+import useLoadingStore from '@/stores/loading'
+
 import ROUTES from '@/constants/route'
 
 import { getDeviceInfo } from '@/lib/utils'
 
-const openCenteredPopup = (url: string) => {
-  const width = 500
-  const height = 600
-
-  // Lấy chiều rộng và chiều cao của màn hình hiện tại
-  const screenWidth = window.screen.width
-  const screenHeight = window.screen.height
-
-  // Tính toán vị trí left và top để căn giữa popup
-  const left = (screenWidth - width) / 2
-  const top = (screenHeight - height) / 2
-
-  // Mở cửa sổ popup căn giữa màn hình
-  const popupRef = window.open(
-    url,
-    '_blank',
-    `width=${width},height=${height},top=${top},left=${left}`
-  )
-
-  return popupRef
-}
+/* eslint-disable react-hooks/exhaustive-deps */
 
 export function useGoogleAuth() {
-  const [isLoading, setIsLoading] = useState(false)
+  const { isLoading, setIsLoading } = useLoadingStore()
   const router = useRouter()
   const { mutateAsync } = useLoginGoogleMutation()
   const { deviceId, deviceType } = getDeviceInfo()
@@ -82,9 +64,6 @@ export function useGoogleAuth() {
               deviceInfo: { deviceId, deviceType }
             }
             await mutateAsync(data)
-            toast.success('Đăng nhập thành công!', {
-              description: 'Chào mừng bạn đến với hệ thống!'
-            })
             router.push(ROUTES.HOME)
           } catch (error) {
             console.error('Authentication error:', error)
@@ -130,4 +109,23 @@ export function useGoogleAuth() {
   }, [clearCheckPopupInterval])
 
   return { handleGoogleLogin, cancelGoogleLogin, isLoading }
+}
+
+const openCenteredPopup = (url: string) => {
+  const width = 500
+  const height = 600
+  const screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX
+  const screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY
+  const screenWidth = window.innerWidth || document.documentElement.clientWidth || screen.width
+  const screenHeight = window.innerHeight || document.documentElement.clientHeight || screen.height
+  const left = screenLeft + (screenWidth - width) / 2
+  const top = screenTop + (screenHeight - height) / 2
+
+  const popupRef = window.open(
+    url,
+    '_blank',
+    `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`
+  )
+
+  return popupRef
 }

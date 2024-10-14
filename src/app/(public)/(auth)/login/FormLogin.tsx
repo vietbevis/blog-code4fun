@@ -17,6 +17,8 @@ import { PasswordInput } from '@/components/ui/password-input'
 
 import { useLoginMutation } from '@/services/queries/auth.query'
 
+import useLoadingStore from '@/stores/loading'
+
 import { FormLoginSchema, LoginBodyType } from '@/schemas'
 
 import ROUTES from '@/constants/route'
@@ -36,6 +38,7 @@ const FormLogin = ({
   }
 }) => {
   const { mutateAsync: login, isPending, error } = useLoginMutation()
+  const { isLoading } = useLoadingStore()
   const deviceInfo = getDeviceInfo()
   const router = useRouter()
 
@@ -49,6 +52,7 @@ const FormLogin = ({
   })
 
   async function onSubmit(values: LoginBodyType) {
+    if (isLoading || isPending) return
     try {
       await login(values)
       if (searchParams.redirect) {
@@ -100,7 +104,7 @@ const FormLogin = ({
             <p className='cursor-pointer text-right text-sm text-muted-foreground transition-colors hover:text-black hover:underline dark:hover:text-white'>
               Forgot password?
             </p>
-            <Button type='submit' className='w-full' loading={isPending}>
+            <Button type='submit' className='w-full' loading={isLoading || isPending}>
               Login
             </Button>
           </form>

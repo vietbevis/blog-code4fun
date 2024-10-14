@@ -1,28 +1,22 @@
-import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
-import { IconGoogle } from '@/components/icons'
-import { buttonVariants } from '@/components/ui/button'
+import { useGoogleAuth } from '@/hooks/useGoogleAuth'
 
-import { OAuthConfig } from '@/configs/OAuthConfig'
-
-import { cn } from '@/lib/utils'
+import { IconGoogle } from '../icons'
 
 export default function LoginGoogle() {
-  const { redirectUri, authUri, clientId } = OAuthConfig
-
-  const params = new URLSearchParams({
-    redirect_uri: redirectUri,
-    response_type: 'code',
-    client_id: clientId,
-    scope: 'openid email profile'
-  })
-
-  const googleLoginUrl = `${authUri}?${params.toString()}`
+  const { handleGoogleLogin, cancelGoogleLogin, isLoading } = useGoogleAuth()
 
   return (
-    <Link href={googleLoginUrl} className={cn(buttonVariants(), 'w-full gap-2')}>
-      <IconGoogle size={28} />
-      Login with Google
-    </Link>
+    <Button onClick={isLoading ? cancelGoogleLogin : handleGoogleLogin} className='w-full'>
+      {isLoading ? (
+        'Cancel...'
+      ) : (
+        <>
+          <IconGoogle size={28} />
+          Login with Google
+        </>
+      )}
+    </Button>
   )
 }
