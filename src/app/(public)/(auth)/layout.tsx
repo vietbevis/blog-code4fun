@@ -5,8 +5,6 @@ import React from 'react'
 
 import { Card } from '@/components/ui/card'
 
-import useLoadingStore from '@/stores/loading'
-
 import { cn } from '@/lib/utils'
 
 const Layout = ({
@@ -14,14 +12,8 @@ const Layout = ({
 }: Readonly<{
   children: React.ReactNode
 }>) => {
-  const { isLoading } = useLoadingStore()
   return (
-    <div
-      className={cn(
-        'flex min-h-[calc(100dvh-4rem)] items-center justify-center p-4',
-        isLoading && 'pointer-events-none'
-      )}
-    >
+    <div className={cn('flex min-h-[calc(100dvh-4rem)] items-center justify-center p-4')}>
       <Card className='w-full max-w-96 pb-2 pt-4'>
         <Image
           src={'/logo.png'}

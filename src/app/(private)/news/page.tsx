@@ -6,6 +6,13 @@ import { CategoryResponseType, TagsResponseType } from '@/types/auth.type'
 
 import FormNewPost from './FormNewPost'
 
+export async function generateMetadata() {
+  return {
+    title: 'Create new post',
+    description: 'Create new post'
+  }
+}
+
 const NewsPage = async () => {
   let data:
     | [

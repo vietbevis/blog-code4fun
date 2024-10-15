@@ -17,7 +17,7 @@ import Icon from '../ui/icon'
 import InfiniteScrollContainer from '../ui/infinite-scoll-container'
 import { Input } from '../ui/input'
 
-const InputSearchComponent = ({ className }: { className?: string }) => {
+const InputSearchComponent = React.memo(({ className }: { className?: string }) => {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace, push } = useRouter()
@@ -26,6 +26,7 @@ const InputSearchComponent = ({ className }: { className?: string }) => {
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const popoverRef = useClickOutside(() => setOpen(false))
+  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])
 
   const handleSearch = useDebouncedCallback((term) => {
     const params = new URLSearchParams(searchParams)
@@ -60,10 +61,18 @@ const InputSearchComponent = ({ className }: { className?: string }) => {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault()
-      setSelectedIndex((prevIndex) => (prevIndex < posts.length - 1 ? prevIndex + 1 : prevIndex))
+      setSelectedIndex((prevIndex) => {
+        const nextIndex = prevIndex < posts.length - 1 ? prevIndex + 1 : prevIndex
+        itemRefs.current[nextIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        return nextIndex
+      })
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
-      setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : -1))
+      setSelectedIndex((prevIndex) => {
+        const nextIndex = prevIndex > 0 ? prevIndex - 1 : -1
+        itemRefs.current[nextIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        return nextIndex
+      })
     } else if (e.key === 'Enter') {
       e.preventDefault()
       if (selectedIndex >= 0 && selectedIndex < posts.length) {
@@ -129,7 +138,7 @@ const InputSearchComponent = ({ className }: { className?: string }) => {
               )}
               {status !== 'pending' && posts.length > 0 && (
                 <InfiniteScrollContainer
-                  className='flex flex-col gap-4'
+                  className='flex flex-col gap-2'
                   onBottomReached={() => {
                     if (hasNextPage && !isFetching) {
                       fetchNextPage()
@@ -138,11 +147,15 @@ const InputSearchComponent = ({ className }: { className?: string }) => {
                 >
                   {posts.map((post, index) => (
                     <Link
+                      ref={(el) => {
+                        itemRefs.current[index] = el
+                      }}
                       href={`/${post.createdBy.userName}/${post.slug}`}
                       key={post.id}
                       className={cn(
                         'px-3 py-2',
-                        index === selectedIndex && 'bg-accent text-accent-foreground'
+                        index === selectedIndex && 'bg-accent text-accent-foreground',
+                        'hover:bg-accent hover:text-accent-foreground'
                       )}
                       onClick={() => setOpen(false)}
                     >
@@ -178,7 +191,9 @@ const InputSearchComponent = ({ className }: { className?: string }) => {
       )}
     </>
   )
-}
+})
+
+InputSearchComponent.displayName = 'InputSearchComponent'
 
 export default function InputSearch({ className }: { className?: string }) {
   return (

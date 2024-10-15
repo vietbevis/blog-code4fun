@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { notFound } from 'next/navigation'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -42,6 +43,8 @@ const AccountPage = () => {
   }
 
   const isChanged = form.formState.isDirty
+
+  return notFound()
 
   return (
     <Form {...form}>

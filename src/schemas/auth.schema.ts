@@ -3,10 +3,7 @@ import { z } from 'zod'
 // Common schemas
 const nameSchema = z.string().min(3).max(50)
 const emailSchema = z.string().email().min(3).max(60)
-const urlSchema = z
-  .string()
-  .url({ message: 'Invalid URL. URL must start with http...' })
-  .max(50)
+const urlSchema = z.string().url({ message: 'Invalid URL. URL must start with http...' }).max(50)
 const passwordSchema = z
   .string()
   .min(8, 'Password must be at least 8 characters.')
@@ -90,7 +87,7 @@ export const FormNewPostSchema = z.object({
   shortDescription: z.string().min(10).max(300),
   thumbnails: z.array(z.string()).min(1, 'Thumbnails is required.'),
   images: z.array(z.string()).optional(),
-  tags: z.array(z.string()).min(1, 'Tags is required.')
+  tags: z.array(z.string()).min(1, 'Tags is required.').max(5, 'Tags must be at most 5 tags.')
 })
 
 export type NewPostBodyType = z.infer<typeof FormNewPostSchema>

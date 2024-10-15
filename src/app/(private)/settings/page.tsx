@@ -7,6 +7,13 @@ import { EKeyToken } from '@/constants/enum'
 
 import FormUpdateProfile from './FormUpdateProfile'
 
+export async function generateMetadata() {
+  return {
+    title: 'Change profile',
+    description: 'Change profile'
+  }
+}
+
 const ProfilePage = async () => {
   const cookieStore = cookies()
   const accessToken = cookieStore.get(EKeyToken.ACCESS_TOKEN)?.value || ''
