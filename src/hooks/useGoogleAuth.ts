@@ -97,6 +97,7 @@ export function useGoogleAuth() {
       checkPopupIntervalRef.current = setInterval(() => {
         if (popupRef.current?.closed) {
           cleanup()
+          setIsLoading(false)
           toast.info('Đăng nhập đã bị hủy', {
             description: 'Bạn đã đóng cửa sổ đăng nhập Google.'
           })
