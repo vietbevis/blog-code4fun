@@ -5,13 +5,23 @@ import React from 'react'
 
 import { Card } from '@/components/ui/card'
 
-const layout = ({
+import useLoadingStore from '@/stores/loading'
+
+import { cn } from '@/lib/utils'
+
+const Layout = ({
   children
 }: Readonly<{
   children: React.ReactNode
 }>) => {
+  const { isLoading } = useLoadingStore()
   return (
-    <div className='flex min-h-[calc(100dvh-4rem)] items-center justify-center p-4'>
+    <div
+      className={cn(
+        'flex min-h-[calc(100dvh-4rem)] items-center justify-center p-4',
+        isLoading && 'pointer-events-none'
+      )}
+    >
       <Card className='w-full max-w-96 pb-2 pt-4'>
         <Image
           src={'/logo.png'}
@@ -28,4 +38,4 @@ const layout = ({
   )
 }
 
-export default layout
+export default Layout

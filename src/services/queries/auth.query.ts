@@ -46,12 +46,15 @@ export const useLogoutMutation = () => {
   })
 }
 
-export const useLoginGoogleMutation = () => {
+export const useLoginGoogleMutation = (onSuccess?: () => void) => {
   const login = useAuthStore((state) => state.login)
   return useMutation({
     mutationFn: AuthService.loginGoogle,
     onSuccess: (data) => {
       login(data.payload)
+      if (onSuccess) {
+        onSuccess()
+      }
       toast.success('Login successfully!')
     }
   })

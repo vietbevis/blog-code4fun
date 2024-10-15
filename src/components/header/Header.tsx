@@ -15,11 +15,14 @@ import {
 } from '@/components/ui/sheet'
 
 import useAuthStore from '@/stores/auth.store'
+import useLoadingStore from '@/stores/loading'
 
 import { useHeadroom } from '@/hooks/useHeadroom'
 import { useMounted } from '@/hooks/useMounted'
 
 import ROUTES from '@/constants/route'
+
+import { cn } from '@/lib/utils'
 
 import InputSearch from '../input-search'
 import SidebarLeft from '../sidebars/SidebarLeft'
@@ -39,12 +42,17 @@ const Header = React.memo(() => {
   const pathname = usePathname()
   const mounted = useMounted()
   const pinned = useHeadroom({ fixedAt: 80 })
+  const { isLoading } = useLoadingStore()
 
   const isLoginOrRegister = pathname === ROUTES.LOGIN || pathname === ROUTES.REGISTER
 
   return (
     <header
-      className={`${headerStyles.base} ${pinned ? headerStyles.pinned : headerStyles.unpinned}`}
+      className={cn(
+        headerStyles.base,
+        pinned ? headerStyles.pinned : headerStyles.unpinned,
+        isLoading && 'pointer-events-none'
+      )}
     >
       <div className='container grid size-full grid-cols-2 items-center gap-2 md:grid-cols-4 md:gap-3'>
         <div className='flex items-center gap-1 md:gap-2'>

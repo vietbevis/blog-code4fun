@@ -14,8 +14,6 @@ import ROUTES from '@/constants/route'
 
 import { getDeviceInfo } from '@/lib/utils'
 
-/* eslint-disable react-hooks/exhaustive-deps */
-
 export function useGoogleAuth() {
   const { isLoading, setIsLoading } = useLoadingStore()
   const router = useRouter()
@@ -23,6 +21,7 @@ export function useGoogleAuth() {
   const { deviceId, deviceType } = getDeviceInfo()
   const popupRef = useRef<Window | null>(null)
   const checkPopupIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const messageListenerRef = useRef<((event: MessageEvent) => void) | null>(null)
 
   const clearCheckPopupInterval = useCallback(() => {
     if (checkPopupIntervalRef.current) {
@@ -31,13 +30,29 @@ export function useGoogleAuth() {
     }
   }, [])
 
+  const removeMessageListener = useCallback(() => {
+    if (messageListenerRef.current) {
+      window.removeEventListener('message', messageListenerRef.current)
+      messageListenerRef.current = null
+    }
+  }, [])
+
+  const cleanup = useCallback(() => {
+    clearCheckPopupInterval()
+    removeMessageListener()
+    if (popupRef.current && !popupRef.current.closed) {
+      popupRef.current.close()
+    }
+    popupRef.current = null
+  }, [clearCheckPopupInterval, removeMessageListener])
+
   useEffect(() => {
     return () => {
-      clearCheckPopupInterval()
+      cleanup()
     }
-  }, [clearCheckPopupInterval])
+  }, [cleanup])
 
-  const handleGoogleLogin = useCallback(async () => {
+  const handleGoogleLogin = useCallback(() => {
     setIsLoading(true)
     const { redirectUri, authUri, clientId } = OAuthConfig
 
@@ -49,64 +64,59 @@ export function useGoogleAuth() {
     })
     const googleLoginUrl = `${authUri}?${params.toString()}`
 
+    cleanup() // Ensure any previous state is cleared
+
     popupRef.current = openCenteredPopup(googleLoginUrl)
 
     if (popupRef.current) {
-      const messageListener = async (event: MessageEvent) => {
+      messageListenerRef.current = async (event: MessageEvent) => {
         if (event.origin !== window.location.origin) return
 
         if (event.data.type === 'GOOGLE_AUTH_SUCCESS' && event.data.code) {
-          clearCheckPopupInterval()
-          popupRef.current?.close()
+          cleanup()
+          const data = {
+            code: event.data.code,
+            deviceInfo: { deviceId, deviceType }
+          }
           try {
-            const data = {
-              code: event.data.code,
-              deviceInfo: { deviceId, deviceType }
-            }
             await mutateAsync(data)
-            router.push(ROUTES.HOME)
+            router.replace(ROUTES.HOME)
           } catch (error) {
-            console.error('Authentication error:', error)
-            toast.error('Đăng nhập thất bại', {
-              description: 'Vui lòng thử lại sau.'
-            })
+            console.log(
+              '🚀 ~ file: useGoogleAuth.ts:84 ~ messageListenerRef.current= ~ error:',
+              error
+            )
           } finally {
             setIsLoading(false)
-            window.removeEventListener('message', messageListener)
           }
         }
       }
 
-      window.addEventListener('message', messageListener)
+      window.addEventListener('message', messageListenerRef.current)
 
       checkPopupIntervalRef.current = setInterval(() => {
         if (popupRef.current?.closed) {
-          clearCheckPopupInterval()
-          setIsLoading(false)
-          window.removeEventListener('message', messageListener)
+          cleanup()
           toast.info('Đăng nhập đã bị hủy', {
             description: 'Bạn đã đóng cửa sổ đăng nhập Google.'
           })
         }
-      }, 1000)
+      }, 500)
     } else {
       setIsLoading(false)
       toast.error('Không thể mở cửa sổ đăng nhập', {
         description: 'Vui lòng kiểm tra cài đặt trình duyệt của bạn.'
       })
     }
-  }, [router, mutateAsync, deviceId, deviceType, clearCheckPopupInterval])
+  }, [cleanup, deviceId, deviceType, mutateAsync, router, setIsLoading])
 
   const cancelGoogleLogin = useCallback(() => {
-    if (popupRef.current && !popupRef.current.closed) {
-      popupRef.current.close()
-    }
-    clearCheckPopupInterval()
-    setIsLoading(false)
+    cleanup()
     toast.info('Đăng nhập đã bị hủy', {
-      description: 'Bạn đã hủy quá trình đăng nhập Google.'
+      description: 'Bạn đã đóng cửa sổ đăng nhập Google.'
     })
-  }, [clearCheckPopupInterval])
+    setIsLoading(false)
+  }, [cleanup, setIsLoading])
 
   return { handleGoogleLogin, cancelGoogleLogin, isLoading }
 }
@@ -121,11 +131,9 @@ const openCenteredPopup = (url: string) => {
   const left = screenLeft + (screenWidth - width) / 2
   const top = screenTop + (screenHeight - height) / 2
 
-  const popupRef = window.open(
+  return window.open(
     url,
     '_blank',
     `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`
   )
-
-  return popupRef
 }
