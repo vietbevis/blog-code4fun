@@ -13,7 +13,7 @@ const ButtonSocial = ({
   title: string
 }) => {
   return (
-    <Link href={'https://' + url} target='_blank' className='group relative inline-block'>
+    <Link href={url} target='_blank' className='group relative inline-block'>
       <Button variant={'outline'} size={'icon'}>
         {icon}
       </Button>

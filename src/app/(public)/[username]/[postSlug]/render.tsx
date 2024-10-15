@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/classnames-order */
 'use client'
 
 import copy from 'copy-to-clipboard'
@@ -12,6 +13,12 @@ import { PostType } from '@/types/auth.type'
 import { replaceImageSrc } from '@/lib/utils'
 
 import 'highlight.js/styles/night-owl.css'
+
+/* eslint-disable tailwindcss/classnames-order */
+
+/* eslint-disable tailwindcss/classnames-order */
+
+/* eslint-disable tailwindcss/classnames-order */
 
 hljs.addPlugin({
   'after:highlightElement': ({ el, text }) => {

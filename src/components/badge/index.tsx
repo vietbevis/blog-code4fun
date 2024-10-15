@@ -60,7 +60,7 @@ const BadgeCustom = ({
       <Link
         href={href}
         className={cn(
-          'inline-block cursor-pointer rounded-full border px-2 py-1 text-xs font-medium',
+          'inline-block cursor-pointer rounded-full border px-3 py-2 text-xs font-medium',
           // getClassName(label),
           className
         )}

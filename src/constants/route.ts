@@ -5,6 +5,7 @@ const ROUTES = {
   REGISTER: '/register',
   REFRESH_TOKEN: '/refresh-token',
   PROFILE: '/settings',
+  CHANGE_PASSWORD: '/settings/account',
   NEWS: '/news',
   BACKEND: {
     // Auth routes

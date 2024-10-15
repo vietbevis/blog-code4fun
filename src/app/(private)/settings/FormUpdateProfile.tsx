@@ -140,7 +140,12 @@ const FormUpdateProfile = ({ profile }: { profile: AccountType }) => {
             <Button type='reset' onClick={() => form.reset()} variant={'destructive'}>
               Cancel
             </Button>
-            <Button type='submit' aria-disabled={!isChanged} disabled={!isChanged}>
+            <Button
+              type='submit'
+              aria-disabled={!isChanged}
+              disabled={!isChanged}
+              loading={isPending}
+            >
               Submit
             </Button>
           </div>

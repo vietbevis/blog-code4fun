@@ -38,10 +38,16 @@ const menuDropdownUser = [
   },
   {
     id: 'settings',
-    label: 'Settings',
+    label: 'Change profile',
     icons: <Icon name='Settings' strokeWidth={2} />,
     url: ROUTES.PROFILE
   }
+  // {
+  //   id: 'account',
+  //   label: 'Change password',
+  //   icons: <Icon name='LockKeyhole' strokeWidth={2} />,
+  //   url: ROUTES.CHANGE_PASSWORD
+  // }
 ]
 
 const AvatarDropdown = () => {

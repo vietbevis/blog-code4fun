@@ -45,11 +45,6 @@ export const useLikePost = ({ slug }: { slug: string }) => {
         payload: PostTypeResponse
       }>(queryKeyDetail)
 
-      await Promise.all([
-        revalidateApiRequest(EKeyQuery.FEED_POSTS),
-        revalidateApiRequest(previousDetailState?.payload.details.createdBy.userName || '')
-      ])
-
       // Cập nhật chi tiết bài viết
       queryClient.setQueryData(queryKeyDetail, () => {
         if (!previousDetailState) return previousDetailState

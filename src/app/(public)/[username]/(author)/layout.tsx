@@ -7,7 +7,17 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 import AccountService from '@/services/account.service'
 
+import { AccountType } from '@/types/auth.type'
+
 import { checkImageURL } from '@/lib/utils'
+
+async function getUserDetails(username: string): Promise<AccountType> {
+  const data = await AccountService.getUser(username)
+  if (!data || !data.payload || !data.payload.details) {
+    throw new Error('Failed to fetch user details')
+  }
+  return data.payload.details
+}
 
 const AuthorPage = async ({
   params,
@@ -16,18 +26,13 @@ const AuthorPage = async ({
   params: { username: string }
   children: React.ReactNode
 }) => {
-  let data = null
+  let user: AccountType
   try {
-    data = await AccountService.getUser(params.username)
+    user = await getUserDetails(params.username)
   } catch (error) {
-    console.log('🚀 ~ file: layout.tsx:37 ~ error:', error)
+    console.error('Error fetching data:', error)
+    notFound()
   }
-
-  if (!data) {
-    return notFound()
-  }
-
-  const profile = data.payload.details
 
   return (
     <>
@@ -37,19 +42,19 @@ const AuthorPage = async ({
           <div className='flex flex-1 flex-col items-center justify-between pb-5 md:flex-row md:items-end md:gap-6'>
             <Avatar className='group mx-auto mt-16 size-40 cursor-pointer bg-card ring-2 ring-input ring-offset-2 md:ml-16'>
               <AvatarImage
-                src={checkImageURL(profile.profile?.avatarUrl)}
+                src={checkImageURL(user.profile?.avatarUrl)}
                 alt='avatar'
                 className='object-cover'
               />
-              <AvatarFallback>{profile.name.charAt(0).toUpperCase()}</AvatarFallback>
+              <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className='flex flex-1 flex-col items-center gap-4 md:flex-row'>
               <div className='text-center md:text-left'>
-                <h1 className='text-3xl font-bold text-primary'>{profile.name}</h1>
-                <p>@{profile.userName}</p>
+                <h1 className='text-3xl font-bold text-primary'>{user.name}</h1>
+                <p>@{user.userName}</p>
               </div>
               <div className='flex items-center gap-2 md:ml-auto md:mr-4'>
-                <ButtonFollow createdBy={profile} className='w-auto' />
+                <ButtonFollow createdBy={user} className='w-auto' />
               </div>
             </div>
           </div>
@@ -59,7 +64,7 @@ const AuthorPage = async ({
         <div className='flex w-full shrink-0 flex-col gap-4 md:w-[28%]'>
           <div className='rounded-lg border border-input bg-card'>
             <h4 className='border-b border-input px-4 py-2 text-base font-bold'>Profile</h4>
-            <ProfileSocial profile={profile} className='p-4' />
+            <ProfileSocial profile={user} className='p-4' />
           </div>
         </div>
         {children}

@@ -13,7 +13,7 @@ import ProfileSocial from './ProfileSocial'
 
 const CardAuthorDetailPost = ({ createdBy }: { createdBy: AccountType }) => {
   return (
-    <Card className='shadow-none'>
+    <Card className='space-y-4 shadow-none'>
       <CardHeader className='space-y-4 p-4 pb-0'>
         <CardTitle className={'flex items-center gap-3'}>
           <Link href={`/${createdBy.userName}`}>
