@@ -81,13 +81,13 @@ export function useGoogleAuth() {
           try {
             await mutateAsync(data)
             router.replace(ROUTES.HOME)
+            setIsLoading(false)
           } catch (error) {
+            setIsLoading(false)
             console.log(
               '🚀 ~ file: useGoogleAuth.ts:84 ~ messageListenerRef.current= ~ error:',
               error
             )
-          } finally {
-            setIsLoading(false)
           }
         }
       }
