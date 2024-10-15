@@ -157,9 +157,26 @@ export interface TopUserType {
   avatarUrl: string
 }
 
+export interface CommentType {
+  id: ID
+  content: string
+  userName: string
+  postId: ID
+  userId: ID
+  createdDate: string
+  modifiedDate: string
+  avatar: string
+  totalChildComment: number | null
+  isHasChildComment: boolean | null
+  parentId: ID | null
+  replies: CommentType[]
+}
+
 export type ListPostTypeResponse = PaginatedResponse<PostType>
 export type AccountResponseType = ResponseMainType & { details: AccountType }
 export type TopUsersResponseType = ResponseMainType & { details: TopUserType[] }
 export type TagsResponseType = ResponseMainType & { details: string[] }
 export type ErrorResponseType = ResponseMainType & { error: any }
+export type CreateCommentResponseType = ResponseMainType & { details: CommentType }
+export type ListCommentResponseType = PaginatedResponse<CommentType>
 export type CategoryResponseType = PaginatedResponse<Category>

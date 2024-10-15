@@ -24,10 +24,18 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const [post, user] = await Promise.all([
-    getPostDetails(params.postSlug),
-    getUserDetails(params.username)
-  ])
+  let post: PostType
+  let user: AccountType
+
+  try {
+    ;[post, user] = await Promise.all([
+      getPostDetails(params.postSlug),
+      getUserDetails(params.username)
+    ])
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    notFound()
+  }
   const url = envConfig.NEXT_PUBLIC_API_URL + `/${user.userName}/${post.slug}`
 
   return {

@@ -157,3 +157,18 @@ export const replaceImageSrc = (content: string) => {
 export function replaceSpecialChars(str: string) {
   return str.replace(/[^a-zA-Z0-9]/g, '_')
 }
+
+export const createSearchParam = <T extends object>(params: T) => {
+  const searchParams = new URLSearchParams(
+    Object.entries(params).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value.toString()
+        }
+        return acc
+      },
+      {} as Record<string, string>
+    )
+  )
+  return searchParams.toString()
+}

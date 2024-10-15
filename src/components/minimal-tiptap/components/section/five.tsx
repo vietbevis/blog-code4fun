@@ -7,7 +7,6 @@ import { toggleVariants } from '@/components/ui/toggle'
 
 import { FormatAction } from '../../types'
 import { CodeBlockPopover } from '../code-block/code-block-popover'
-import { ImageEditDialog } from '../image/image-edit-dialog'
 import { LinkEditPopover } from '../link/link-edit-popover'
 import { ToolbarSection } from '../toolbar-section'
 
@@ -17,16 +16,6 @@ interface InsertElement extends FormatAction {
 }
 
 const formatActions: InsertElement[] = [
-  // {
-  //   value: "codeBlock",
-  //   label: "Code block",
-  //   icon: <Icon name="CodeXml" className="size-5" />,
-  //   action: (editor) => editor.chain().focus().toggleCodeBlock().run(),
-  //   isActive: (editor) => editor.isActive("codeBlock"),
-  //   canExecute: (editor) =>
-  //     editor.can().chain().focus().toggleCodeBlock().run(),
-  //   shortcuts: ["mod", "alt", "C"],
-  // },
   {
     value: 'blockquote',
     label: 'Blockquote',
@@ -63,7 +52,7 @@ export const SectionFive: React.FC<SectionFiveProps> = ({
   return (
     <>
       <LinkEditPopover editor={editor} size={size} variant={variant} />
-      <ImageEditDialog editor={editor} size={size} variant={variant} />
+      {/* <ImageEditDialog editor={editor} size={size} variant={variant} /> */}
       <CodeBlockPopover editor={editor} size={size} variant={variant} />
       <ToolbarSection
         editor={editor}

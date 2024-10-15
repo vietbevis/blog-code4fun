@@ -55,7 +55,7 @@ export default async function Layout({ children, comments, params }: LayoutProps
         <div className='flex w-full flex-col gap-4 lg:flex-row'>
           <main className='flex-1 space-y-4'>
             {children}
-            <div className='w-full rounded-lg border-input sm:border sm:bg-card'>{comments}</div>
+            <div className='w-full rounded-lg border border-input bg-card'>{comments}</div>
           </main>
           <aside className='basis-[28%]'>
             <CardAuthorDetailPost createdBy={user} />

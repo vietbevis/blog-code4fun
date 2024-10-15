@@ -13,6 +13,7 @@ import { EKeyQuery } from '@/constants/enum'
 import ROUTES from '@/constants/route'
 
 import http from '@/lib/http'
+import { createSearchParam } from '@/lib/utils'
 
 const PostService = {
   getDetail: (slug: string) =>
@@ -40,20 +41,8 @@ const PostService = {
       }
     }),
   getPostsByFilters: (params: PostQueryParams) => {
-    const searchParams = new URLSearchParams(
-      Object.entries(params).reduce(
-        (acc, [key, value]) => {
-          if (value !== undefined) {
-            acc[key] = value.toString()
-          }
-          return acc
-        },
-        {} as Record<string, string>
-      )
-    )
-
     return http.get<ListPostTypeResponse>(
-      `${ROUTES.BACKEND.POST_FEED}?${searchParams.toString()}`,
+      `${ROUTES.BACKEND.POST_FEED}?${createSearchParam<PostQueryParams>(params)}`,
       params.userName
         ? {
             next: {

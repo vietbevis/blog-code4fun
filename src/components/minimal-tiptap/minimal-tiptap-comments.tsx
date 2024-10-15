@@ -4,7 +4,7 @@ import { EditorContent } from '@tiptap/react'
 import { Content, Editor } from '@tiptap/react'
 import * as React from 'react'
 
-import { Separator } from '@/components/ui/separator'
+import useLoadingStore from '@/stores/loading'
 
 import { useHeadroom } from '@/hooks/useHeadroom'
 
@@ -13,12 +13,9 @@ import { cn } from '@/lib/utils'
 import { Button } from '../ui/button'
 import Icon from '../ui/icon'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { ImageBubbleMenu } from './components/bubble-menu/image-bubble-menu'
 import { LinkBubbleMenu } from './components/bubble-menu/link-bubble-menu'
 import EmojiPicker from './components/emoji'
-import { SectionFive } from './components/section/five'
-import { SectionFour } from './components/section/four'
-import { SectionOne } from './components/section/one'
+import SectionFive from './components/section/five'
 import { SectionTwo } from './components/section/two'
 import { UseMinimalTiptapEditorProps, useMinimalTiptapEditor } from './hooks/use-minimal-tiptap'
 import './styles/index.css'
@@ -32,39 +29,22 @@ export interface MinimalTiptapProps extends Omit<UseMinimalTiptapEditorProps, 'o
 
 const Toolbar = ({ editor }: { editor: Editor }) => {
   const pinned = useHeadroom({ fixedAt: 80 })
+  const { isLoading } = useLoadingStore()
   return (
     <div
       className={cn(
-        'sticky inset-x-0 z-50 shrink-0 overflow-x-auto rounded-t-md border-b border-border bg-card p-1 transition-all duration-300',
+        'sticky inset-x-0 z-50 shrink-0 overflow-x-auto rounded-t-md border-b border-accent-foreground/40 bg-card p-1 transition-all duration-300',
         pinned ? 'top-16' : 'top-0'
       )}
     >
-      <div className='flex w-max items-center gap-px'>
-        <SectionOne editor={editor} activeLevels={[1, 2, 3, 4, 5, 6]} />
-
-        <Separator orientation='vertical' className='mx-2 h-7' />
-
+      <div className='flex w-full items-center gap-px'>
         <SectionTwo
           editor={editor}
-          activeActions={['bold', 'italic', 'strikethrough', 'code', 'clearFormatting']}
-          mainActionCount={5}
-        />
-
-        <Separator orientation='vertical' className='mx-2 h-7' />
-
-        <SectionFour
-          editor={editor}
-          activeActions={['orderedList', 'bulletList']}
-          mainActionCount={2}
-        />
-
-        <Separator orientation='vertical' className='mx-2 h-7' />
-
-        <SectionFive
-          editor={editor}
-          activeActions={['codeBlock', 'blockquote', 'horizontalRule']}
+          activeActions={['bold', 'italic', 'code']}
           mainActionCount={3}
         />
+
+        <SectionFive editor={editor} activeActions={['codeBlock']} mainActionCount={1} />
 
         <Popover>
           <PopoverTrigger asChild>
@@ -76,18 +56,27 @@ const Toolbar = ({ editor }: { editor: Editor }) => {
             <EmojiPicker editor={editor} />
           </PopoverContent>
         </Popover>
+        <div className='flex flex-1 justify-end'>
+          <Button
+            className='gap-2'
+            size={'sm'}
+            disabled={isLoading || editor.isEmpty || editor.getText().trim().length <= 5}
+            type='submit'
+          >
+            Publish
+            <Icon name='SendHorizontal' className='size-4' />
+          </Button>
+        </div>
       </div>
     </div>
   )
 }
 
-export const MinimalTiptapEditor = React.forwardRef<HTMLDivElement, MinimalTiptapProps>(
+export const MinimalTiptapCommentsEditor = React.forwardRef<HTMLDivElement, MinimalTiptapProps>(
   ({ value, onChange, className, editorContentClassName, ...props }, ref) => {
     const editor = useMinimalTiptapEditor({
       value,
       onUpdate: onChange,
-      enableInputRules: false,
-      enablePasteRules: false,
       ...props
     })
 
@@ -99,7 +88,7 @@ export const MinimalTiptapEditor = React.forwardRef<HTMLDivElement, MinimalTipta
       <div
         ref={ref}
         className={cn(
-          'flex h-auto min-h-72 w-full flex-col rounded-md border border-input shadow-sm focus-within:border-accent-foreground/40',
+          'flex h-auto min-h-32 w-full flex-col rounded-md border border-accent-foreground/40 shadow-sm',
           className
         )}
       >
@@ -109,12 +98,11 @@ export const MinimalTiptapEditor = React.forwardRef<HTMLDivElement, MinimalTipta
           className={cn('minimal-tiptap-editor', editorContentClassName)}
         />
         <LinkBubbleMenu editor={editor} />
-        <ImageBubbleMenu editor={editor} />
       </div>
     )
   }
 )
 
-MinimalTiptapEditor.displayName = 'MinimalTiptapEditor'
+MinimalTiptapCommentsEditor.displayName = 'MinimalTiptapCommentsEditor'
 
-export default MinimalTiptapEditor
+export default MinimalTiptapCommentsEditor
