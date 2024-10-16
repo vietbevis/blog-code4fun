@@ -33,7 +33,7 @@ const Toolbar = ({ editor }: { editor: Editor }) => {
   return (
     <div
       className={cn(
-        'sticky inset-x-0 z-50 shrink-0 overflow-x-auto rounded-t-md border-b border-accent-foreground/40 bg-card p-1 transition-all duration-300',
+        'shrink-0 overflow-x-auto rounded-t-md border-b border-accent-foreground/40 bg-card p-1 transition-all duration-300',
         pinned ? 'top-16' : 'top-0'
       )}
     >

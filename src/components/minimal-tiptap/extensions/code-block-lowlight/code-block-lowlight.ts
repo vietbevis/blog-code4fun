@@ -1,11 +1,11 @@
 import { CodeBlockLowlight as TiptapCodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
-import { all, createLowlight } from 'lowlight'
+import { common, createLowlight } from 'lowlight'
 
 export const CodeBlockLowlight = TiptapCodeBlockLowlight.extend({
   addOptions() {
     return {
       ...this.parent?.(),
-      lowlight: createLowlight(all),
+      lowlight: createLowlight(common),
       defaultLanguage: 'javascript',
       HTMLAttributes: {
         class: 'block-node'

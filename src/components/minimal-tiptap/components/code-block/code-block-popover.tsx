@@ -1,6 +1,6 @@
 import type { Editor } from '@tiptap/react'
 import { VariantProps } from 'class-variance-authority'
-import { all, createLowlight } from 'lowlight'
+import { common, createLowlight } from 'lowlight'
 import * as React from 'react'
 
 import {
@@ -23,7 +23,7 @@ interface CodeBlockPopoverProps extends VariantProps<typeof toggleVariants> {
   editor: Editor
 }
 
-const listLanguages = createLowlight(all).listLanguages()
+const listLanguages = createLowlight(common).listLanguages()
 
 const CodeBlockPopover = ({ editor, size, variant }: CodeBlockPopoverProps) => {
   const [open, setOpen] = React.useState(false)

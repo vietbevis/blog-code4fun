@@ -48,7 +48,7 @@ export default async function Layout({ children, comments, params }: LayoutProps
   return (
     <div className='pb-20 pt-4 md:container sm:bg-background md:pb-4'>
       <article className='gap-4 sm:flex'>
-        <aside className='fixed bottom-0 left-0 z-10 mt-16 grid h-14 w-screen grid-cols-2 place-items-center gap-2 rounded-md border-t border-t-input bg-card sm:static sm:right-full sm:top-20 sm:h-fit sm:w-10 sm:grid-cols-1 sm:grid-rows-3 sm:rounded-none sm:border-none sm:bg-transparent'>
+        <aside className='fixed bottom-0 left-0 z-[999] mt-16 grid h-14 w-screen grid-cols-2 place-items-center gap-2 rounded-md border-t border-t-input bg-card sm:static sm:right-full sm:top-20 sm:h-fit sm:w-10 sm:grid-cols-1 sm:grid-rows-3 sm:rounded-none sm:border-none sm:bg-transparent'>
           <ButtonLike post={post} />
           <ButtonShare />
         </aside>

@@ -5,6 +5,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 
 import AuthProvider from '@/providers/auth-provider'
 import NetworkProvider from '@/providers/network-provider'
+import ScrollTop from '@/providers/scroll-top-provider'
 import QueryProvider from '@/providers/tanstack-provider'
 import { ThemeProvider } from '@/providers/theme-provider'
 
@@ -49,6 +50,7 @@ export default function RootLayout({
               </QueryProvider>
             </NetworkProvider>
             <Toaster richColors position='top-center' />
+            <ScrollTop />
           </TooltipProvider>
         </ThemeProvider>
       </body>

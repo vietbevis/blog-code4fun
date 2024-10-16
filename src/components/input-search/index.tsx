@@ -10,7 +10,8 @@ import { useClickOutside } from '@/hooks/useClickOutside'
 import { useDebouncedCallback } from '@/hooks/useDebouncedCallback'
 import { useWindowEvent } from '@/hooks/useWindowEvent'
 
-import { cn, formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/format'
+import { cn } from '@/lib/utils'
 
 import { Button } from '../ui/button'
 import Icon from '../ui/icon'

@@ -89,3 +89,15 @@
   @apply rounded-full bg-neutral-500/50;
 }
 /* End custom scroll bar */
+
+.button-scroll-top {
+  bottom: 2rem;
+  right: 2rem;
+}
+
+@media screen and (max-width: 640px) {
+  .button-scroll-top {
+    bottom: 4.5rem;
+    right: 1rem;
+  }
+}

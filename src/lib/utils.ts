@@ -1,8 +1,6 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import { type ClassValue, clsx } from 'clsx'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import jwt from 'jsonwebtoken'
+import { jwtDecode } from 'jwt-decode'
 import { UseFormSetError } from 'react-hook-form'
 import { toast } from 'sonner'
 import { twMerge } from 'tailwind-merge'
@@ -23,7 +21,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const decodeToken = (token: string) => {
-  return jwt.decode(token) as TokenPayload
+  return jwtDecode(token) as TokenPayload
 }
 
 export const handleErrorApi = ({
@@ -100,12 +98,6 @@ export const checkAndRefreshToken = async (param?: {
       return param?.onError && param.onError()
     }
   }
-}
-
-export function formatDate(date: string) {
-  dayjs.extend(relativeTime)
-  const commentTime = dayjs(date).format('MMMM D, YYYY')
-  return commentTime
 }
 
 export const checkImageURL = (url: string | null | undefined) => {

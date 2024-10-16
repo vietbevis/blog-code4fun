@@ -1,9 +1,7 @@
-import { InfiniteData, useInfiniteQuery, useMutation } from '@tanstack/react-query'
+import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { CommentType } from '@/types/auth.type'
-
-import { getQueryClient } from '@/lib/getQueryClient'
 
 import CommentService from '../comment.service'
 
@@ -14,35 +12,95 @@ interface InfiniteComment {
 }
 
 export const useCreateComment = () => {
-  const queryClient = getQueryClient()
+  const queryClient = useQueryClient()
+
   return useMutation({
     mutationFn: CommentService.createComment,
     onSuccess: (newComment) => {
       const comment = newComment.payload.details
-      const isChild = comment.parentId !== '' ? true : false
-      console.log('🚀 ~ file: comments.ts:13 ~ useCreateComment ~ isChild:', isChild)
+      const queryKey = comment.parentId
+        ? ['comments', comment.parentId]
+        : ['comments', comment.postId]
 
-      const updateComments = (oldComments: InfiniteData<InfiniteComment> | undefined) => {
-        if (!oldComments) return oldComments
-        return {
-          ...oldComments,
-          pages: oldComments.pages.map((page) => ({
-            ...page,
-            comments: [comment, ...page.comments]
-          }))
-        }
-      }
-
-      const queryKey = isChild ? ['comments', comment.parentId] : ['comments', comment.postId]
-
-      queryClient.setQueryData<InfiniteData<InfiniteComment>>(queryKey, updateComments)
+      queryClient.setQueryData<InfiniteData<InfiniteComment>>(queryKey, (oldData) =>
+        updateComments(oldData, comment, queryClient)
+      )
     },
-    onError: (error) => {
-      toast.error('Error', {
+    onError: (error: Error) => {
+      toast.error('Error creating comment', {
         description: error.message
       })
     }
   })
+}
+
+const updateComments = (
+  oldData: InfiniteData<InfiniteComment> | undefined,
+  newComment: CommentType,
+  queryClient: ReturnType<typeof useQueryClient>
+): InfiniteData<InfiniteComment> | undefined => {
+  if (!oldData) return oldData
+
+  const isChildComment = Boolean(newComment.parentId)
+
+  if (isChildComment) {
+    return updateChildComment(oldData, newComment, queryClient)
+  }
+
+  return updateParentComment(oldData, newComment)
+}
+
+const updateChildComment = (
+  oldData: InfiniteData<InfiniteComment>,
+  newComment: CommentType,
+  queryClient: ReturnType<typeof useQueryClient>
+): InfiniteData<InfiniteComment> => {
+  return {
+    ...oldData,
+    pages: oldData.pages.map((page) => ({
+      ...page,
+      comments: page.comments.map((c) => {
+        if (c.id === newComment.parentId) {
+          if (c.isHasChildComment) {
+            updateChildCommentCache(newComment, queryClient)
+            return c
+          }
+          return { ...c, isHasChildComment: true }
+        }
+        return c
+      })
+    }))
+  }
+}
+
+const updateChildCommentCache = (
+  newComment: CommentType,
+  queryClient: ReturnType<typeof useQueryClient>
+) => {
+  queryClient.setQueryData<InfiniteData<InfiniteComment>>(
+    ['comments', newComment.parentId],
+    (oldChildData) => {
+      if (!oldChildData) return oldChildData
+      return {
+        ...oldChildData,
+        pages: oldChildData.pages.map((childPage, index) =>
+          index === 0 ? { ...childPage, comments: [newComment, ...childPage.comments] } : childPage
+        )
+      }
+    }
+  )
+}
+
+const updateParentComment = (
+  oldData: InfiniteData<InfiniteComment>,
+  newComment: CommentType
+): InfiniteData<InfiniteComment> => {
+  return {
+    ...oldData,
+    pages: oldData.pages.map((page, index) =>
+      index === 0 ? { ...page, comments: [newComment, ...page.comments] } : page
+    )
+  }
 }
 
 export const useInfiniteScrollComments = (postId: string) => {

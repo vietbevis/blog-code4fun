@@ -9,7 +9,8 @@ import envConfig from '@/configs/envConfig'
 
 import { AccountType, PostType } from '@/types/auth.type'
 
-import { checkImageURL, formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/format'
+import { checkImageURL } from '@/lib/utils'
 import { baseOpenGraph } from '@/shared-metadata'
 
 import { getPostDetails, getUserDetails } from './layout'

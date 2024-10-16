@@ -5,7 +5,8 @@ import React from 'react'
 
 import { PostType } from '@/types/auth.type'
 
-import { checkImageURL, formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/format'
+import { checkImageURL } from '@/lib/utils'
 
 import InfoHover from '../ui/InfoHover'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'

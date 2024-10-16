@@ -32,7 +32,7 @@ import { ModeToggle } from '../ui/mode-toggle'
 import AvatarDropdown from './AvatarDropdown'
 
 const headerStyles = {
-  base: 'fixed inset-x-0 top-0 z-50 h-16 bg-card shadow transition-transform duration-300',
+  base: 'fixed inset-x-0 top-0 z-[9999] h-16 bg-card shadow transition-transform duration-300',
   pinned: 'translate-y-0',
   unpinned: '-translate-y-16'
 }

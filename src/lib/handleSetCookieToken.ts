@@ -1,8 +1,13 @@
+import jwt from 'jsonwebtoken'
 import { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
+
+import { TokenPayload } from '@/types/auth.type'
 
 import { EKeyToken } from '@/constants/enum'
 
-import { decodeToken } from './utils'
+export const decodeToken = (token: string) => {
+  return jwt.decode(token) as TokenPayload
+}
 
 type Props = {
   cookieStore: ReadonlyRequestCookies

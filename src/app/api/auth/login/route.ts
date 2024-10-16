@@ -22,6 +22,7 @@ export async function POST(request: Request) {
     })
     return Response.json(payload)
   } catch (error: any) {
+    console.log('🚀 ~ file: route.ts:25 ~ POST ~ error:', error)
     if (error instanceof HttpError) {
       return Response.json(error.payload, {
         status: error.status
