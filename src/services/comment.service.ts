@@ -17,7 +17,7 @@ type PaginateParams = {
 const CommentService = {
   createComment: (body: CommentBodyType) =>
     http.post<CreateCommentResponseType>(ROUTES.BACKEND.CREATE_COMMENT, body),
-  getComments: (postId: string, params: PaginateParams = { offset: 0, limit: 10 }) => {
+  getComments: (postId: string, params: PaginateParams = { offset: 0, limit: 5 }) => {
     return http.get<ListCommentResponseType>(
       `${ROUTES.BACKEND.GET_COMMENTS}/${postId}?${createSearchParam<PaginateParams>(params)}`,
       {
@@ -25,7 +25,7 @@ const CommentService = {
       }
     )
   },
-  getCommentsChild: (parentId: string, params: PaginateParams = { offset: 0, limit: 10 }) => {
+  getCommentsChild: (parentId: string, params: PaginateParams = { offset: 0, limit: 5 }) => {
     return http.get<ListCommentResponseType>(
       `${ROUTES.BACKEND.GET_CHILD_COMMENTS}/${parentId}?${createSearchParam<PaginateParams>(params)}`,
       {

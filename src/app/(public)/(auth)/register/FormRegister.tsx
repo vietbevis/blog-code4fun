@@ -6,7 +6,7 @@ import Link from 'next/link'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
@@ -79,7 +79,6 @@ const FormRegister = () => {
             {error && (
               <Alert variant='destructive'>
                 <ExclamationTriangleIcon className='size-4' />
-                <AlertTitle>Error</AlertTitle>
                 <AlertDescription>
                   {(error as any).payload?.message ||
                     (error as any).payload?.error ||
