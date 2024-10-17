@@ -14,7 +14,7 @@ import Icon from '@/components/ui/icon'
 import { toggleVariants } from '@/components/ui/toggle'
 
 import { ToolbarButton } from '../toolbar-button'
-import { ImageEditBlock } from './image-edit-block'
+import ImageEditBlock from './image-edit-block'
 
 interface ImageEditDialogProps extends VariantProps<typeof toggleVariants> {
   editor: Editor

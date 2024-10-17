@@ -15,9 +15,8 @@ import {
   FormMessage
 } from '@/components/ui/form'
 
-import { useCreateComment } from '@/services/queries/comments'
+import { useCreateComment, useUpdateComment } from '@/services/queries/comments'
 
-import useAuthStore from '@/stores/auth.store'
 import useLoadingStore from '@/stores/loading'
 
 import { CommentBodyType, FormCommentSchema } from '@/schemas/auth.schema'
@@ -25,16 +24,27 @@ import { CommentBodyType, FormCommentSchema } from '@/schemas/auth.schema'
 interface FormCommentProps {
   postId: string
   parentCommentId?: string
+  type?: 'UPDATE' | 'CREATE'
+  defaultValues?: string
+  commentId?: string
+  onSuccess?: () => void
 }
 
-const FormComment = ({ postId, parentCommentId = '' }: FormCommentProps) => {
-  const { isAuth } = useAuthStore()
+const FormComment = ({
+  postId,
+  parentCommentId = '',
+  type = 'CREATE',
+  defaultValues = '<p></p>',
+  commentId = '',
+  onSuccess
+}: FormCommentProps) => {
   const { setIsLoading } = useLoadingStore()
   const { mutateAsync: createComment, isPending } = useCreateComment()
+  const { mutateAsync: updateComment, isPending: loading } = useUpdateComment()
   const form = useForm<CommentBodyType>({
     resolver: zodResolver(FormCommentSchema),
     defaultValues: {
-      content: '<p></p>',
+      content: defaultValues,
       postId,
       parentCommentId
     }
@@ -44,11 +54,20 @@ const FormComment = ({ postId, parentCommentId = '' }: FormCommentProps) => {
     setIsLoading(isPending)
   }, [isPending, setIsLoading])
 
+  useEffect(() => {
+    setIsLoading(loading)
+  }, [loading, setIsLoading])
+
   // 2. Define a submit handler.
   async function onSubmit(data: CommentBodyType) {
     if (isPending) return
     try {
-      await createComment(data)
+      if (type === 'CREATE') {
+        await createComment(data)
+      } else {
+        await updateComment({ body: data, commentId: commentId })
+      }
+      if (onSuccess) onSuccess()
       form.reset()
     } catch (error) {
       console.log('🚀 ~ file: FormComment.tsx:48 ~ onSubmit ~ error:', error)
@@ -71,7 +90,7 @@ const FormComment = ({ postId, parentCommentId = '' }: FormCommentProps) => {
                     className='w-full'
                     editorContentClassName='p-5'
                     output='html'
-                    placeholder={isAuth ? 'Write a comment...' : 'Sign in to comment'}
+                    placeholder={'Write a comment...'}
                     autofocus={false}
                     editable={true}
                     editorClassName='focus:outline-none'

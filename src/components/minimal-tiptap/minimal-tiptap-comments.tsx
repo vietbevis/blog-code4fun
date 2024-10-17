@@ -44,7 +44,12 @@ const Toolbar = ({ editor }: { editor: Editor }) => {
           mainActionCount={3}
         />
 
-        <SectionFive editor={editor} activeActions={['codeBlock']} mainActionCount={1} />
+        <SectionFive
+          editor={editor}
+          activeActions={['codeBlock']}
+          mainActionCount={1}
+          image={false}
+        />
 
         <Popover>
           <PopoverTrigger asChild>

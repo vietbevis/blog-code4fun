@@ -22,9 +22,15 @@ export const useCreateComment = () => {
         ? ['comments', comment.parentId]
         : ['comments', comment.postId]
 
-      queryClient.setQueryData<InfiniteData<InfiniteComment>>(queryKey, (oldData) =>
-        updateComments(oldData, comment, queryClient)
-      )
+      queryClient.setQueryData<InfiniteData<InfiniteComment>>(queryKey, (oldData) => {
+        if (!oldData) return oldData
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page, index) =>
+            index === 0 ? { ...page, comments: [comment, ...page.comments] } : page
+          )
+        }
+      })
     },
     onError: (error: Error) => {
       toast.error('Error creating comment', {
@@ -34,73 +40,63 @@ export const useCreateComment = () => {
   })
 }
 
-const updateComments = (
-  oldData: InfiniteData<InfiniteComment> | undefined,
-  newComment: CommentType,
-  queryClient: ReturnType<typeof useQueryClient>
-): InfiniteData<InfiniteComment> | undefined => {
-  if (!oldData) return oldData
+export const useUpdateComment = () => {
+  const queryClient = useQueryClient()
 
-  const isChildComment = Boolean(newComment.parentId)
+  return useMutation({
+    mutationFn: CommentService.updateComment,
+    onSuccess: (updatedComment) => {
+      const comment = updatedComment.payload.details
+      const queryKey = comment.parentId
+        ? ['comments', comment.parentId]
+        : ['comments', comment.postId]
 
-  if (isChildComment) {
-    return updateChildComment(oldData, newComment, queryClient)
-  }
-
-  return updateParentComment(oldData, newComment)
-}
-
-const updateChildComment = (
-  oldData: InfiniteData<InfiniteComment>,
-  newComment: CommentType,
-  queryClient: ReturnType<typeof useQueryClient>
-): InfiniteData<InfiniteComment> => {
-  return {
-    ...oldData,
-    pages: oldData.pages.map((page) => ({
-      ...page,
-      comments: page.comments.map((c) => {
-        if (c.id === newComment.parentId) {
-          if (c.isHasChildComment) {
-            updateChildCommentCache(newComment, queryClient)
-            return c
-          }
-          return { ...c, isHasChildComment: true }
+      queryClient.setQueryData<InfiniteData<InfiniteComment>>(queryKey, (oldData) => {
+        if (!oldData) return oldData
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            comments: page.comments.map((c) => (c.id === comment.id ? comment : c))
+          }))
         }
-        return c
       })
-    }))
-  }
-}
-
-const updateChildCommentCache = (
-  newComment: CommentType,
-  queryClient: ReturnType<typeof useQueryClient>
-) => {
-  queryClient.setQueryData<InfiniteData<InfiniteComment>>(
-    ['comments', newComment.parentId],
-    (oldChildData) => {
-      if (!oldChildData) return oldChildData
-      return {
-        ...oldChildData,
-        pages: oldChildData.pages.map((childPage, index) =>
-          index === 0 ? { ...childPage, comments: [newComment, ...childPage.comments] } : childPage
-        )
-      }
+    },
+    onError: (error: Error) => {
+      toast.error('Error updating comment', {
+        description: error.message
+      })
     }
-  )
+  })
 }
 
-const updateParentComment = (
-  oldData: InfiniteData<InfiniteComment>,
-  newComment: CommentType
-): InfiniteData<InfiniteComment> => {
-  return {
-    ...oldData,
-    pages: oldData.pages.map((page, index) =>
-      index === 0 ? { ...page, comments: [newComment, ...page.comments] } : page
-    )
-  }
+export const useDeleteComment = (comment: CommentType) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: CommentService.deleteComment,
+    onMutate: () => {
+      const queryKey = comment.parentId
+        ? ['comments', comment.parentId]
+        : ['comments', comment.postId]
+
+      queryClient.setQueryData<InfiniteData<InfiniteComment>>(queryKey, (oldData) => {
+        if (!oldData) return oldData
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            comments: page.comments.filter((c) => c.id !== comment.id)
+          }))
+        }
+      })
+    },
+    onError: (error: Error) => {
+      toast.error('Error deleting comment', {
+        description: error.message
+      })
+    }
+  })
 }
 
 export const useInfiniteScrollComments = (postId: string) => {

@@ -32,7 +32,11 @@ const CommentService = {
         baseUrl: envConfig.NEXT_PUBLIC_API_ENDPOINT_V2
       }
     )
-  }
+  },
+  updateComment: ({ body, commentId }: { body: CommentBodyType; commentId: string }) =>
+    http.put<CreateCommentResponseType>(`${ROUTES.BACKEND.UPDATE_COMMENT}/${commentId}`, body),
+  deleteComment: (commentId: string) =>
+    http.put<CreateCommentResponseType>(`${ROUTES.BACKEND.DELETE_COMMENT}/${commentId}`, {})
 }
 
 export default CommentService

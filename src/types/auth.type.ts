@@ -161,6 +161,7 @@ export interface CommentType {
   id: ID
   content: string
   userName: string
+  name: string
   postId: ID
   userId: ID
   createdDate: string

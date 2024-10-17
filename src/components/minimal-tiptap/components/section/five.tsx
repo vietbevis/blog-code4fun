@@ -7,6 +7,7 @@ import { toggleVariants } from '@/components/ui/toggle'
 
 import { FormatAction } from '../../types'
 import { CodeBlockPopover } from '../code-block/code-block-popover'
+import { ImageEditDialog } from '../image/image-edit-dialog'
 import { LinkEditPopover } from '../link/link-edit-popover'
 import { ToolbarSection } from '../toolbar-section'
 
@@ -40,6 +41,7 @@ interface SectionFiveProps extends VariantProps<typeof toggleVariants> {
   editor: Editor
   activeActions?: InsertElementAction[]
   mainActionCount?: number
+  image?: boolean
 }
 
 export const SectionFive: React.FC<SectionFiveProps> = ({
@@ -47,12 +49,13 @@ export const SectionFive: React.FC<SectionFiveProps> = ({
   activeActions = formatActions.map((action) => action.value),
   mainActionCount = 0,
   size,
-  variant
+  variant,
+  image = true
 }) => {
   return (
     <>
       <LinkEditPopover editor={editor} size={size} variant={variant} />
-      {/* <ImageEditDialog editor={editor} size={size} variant={variant} /> */}
+      {image && <ImageEditDialog editor={editor} size={size} variant={variant} />}
       <CodeBlockPopover editor={editor} size={size} variant={variant} />
       <ToolbarSection
         editor={editor}

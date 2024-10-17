@@ -93,7 +93,7 @@ const request = async <Response>(
   }
 
   if (!response.ok) {
-    if (response.status === 401) {
+    if (response.status === 401 && normalizePath(url) === ROUTES.HANDLER.REFRESH_TOKEN) {
       if (isClient) {
         if (!clientLogoutRequest) {
           clientLogoutRequest = fetch(ROUTES.HANDLER.LOGOUT, {
