@@ -2,12 +2,11 @@
 
 import React, { useMemo } from 'react'
 
+import CommentItem from '@/components/comment/CommentItem'
 import CommentSkeleton from '@/components/skeletons/CommentSkeleton'
 import { Button } from '@/components/ui/button'
 
 import { useInfiniteScrollComments } from '@/services/queries/comments.query'
-
-import CommentItem from './CommentItem'
 
 interface CommentsProps {
   postId: string

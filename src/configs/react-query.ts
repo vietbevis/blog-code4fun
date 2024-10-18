@@ -9,7 +9,7 @@ export const queryConfig = {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     retry: false,
-    staleTime: 1000 * 60
+    staleTime: 1000 * 60 * 10
   },
   dehydrate: {
     shouldDehydrateQuery: (query) =>

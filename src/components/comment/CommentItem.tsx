@@ -25,11 +25,11 @@ import useAuthStore from '@/stores/auth.store'
 
 import { CommentType } from '@/types/auth.type'
 
+import RenderComment from '@/app/(public)/[username]/[postSlug]/@comments/renderComment'
 import { formatDate } from '@/lib/format'
 import { checkImageURL, cn } from '@/lib/utils'
 
 import FormComment from './FormComment'
-import RenderComment from './renderComment'
 
 interface CommentItemProps {
   comment: CommentType
@@ -62,6 +62,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, authorPostId, level 
 
   const toggleReply = useCallback(() => setReply((prev) => !prev), [])
   const toggleUpdate = useCallback(() => setUpdate((prev) => !prev), [])
+  const toggleShowMore = useCallback(() => setShowMore((prev) => !prev), [])
 
   const isAuthorComment = authorPostId === comment.userId
   const canReply = level < MAX_LV_CMT
@@ -74,8 +75,8 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, authorPostId, level 
         isAuthorComment ? 'border-l-blue-500' : 'border-l-gray-300'
       )}
     >
-      <CardHeader className='flex flex-row items-center space-x-4 p-0 pr-4'>
-        <Link href={`/${comment.userName}`} className='flex w-full items-center gap-2 md:gap-4'>
+      <CardHeader className='flex flex-row items-center justify-between space-x-4 p-0 pr-4'>
+        <Link href={`/${comment.userName}`} className='flex items-center gap-2 md:gap-4'>
           <Avatar className='hidden md:flex'>
             <AvatarImage src={checkImageURL(comment.avatar)} alt={comment.userName} />
             <AvatarFallback>{comment.name.charAt(0)}</AvatarFallback>
@@ -96,7 +97,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, authorPostId, level 
                 <Button
                   variant={'ghost'}
                   size={'icon'}
-                  onClick={() => setShowMore(!showMore)}
+                  onClick={toggleShowMore}
                   disabled={isFetching}
                 >
                   <Icon name={showMore ? 'ChevronsDownUp' : 'ChevronsUpDown'} className='size-4' />
@@ -162,14 +163,17 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, authorPostId, level 
         </UnauthenticatedWrapper>
       </CardFooter>
 
-      {(reply || commentsChild.length > 0) && (
+      {(reply || commentsChild.length > 0) && ((reply && canReply) || showMore || hasNextPage) && (
         <div className='space-y-4 md:ml-4'>
           {reply && canReply && (
             <div className='mb-4'>
               <FormComment
                 postId={comment.postId}
                 parentCommentId={comment.id}
-                onSuccess={() => setReply(false)}
+                onSuccess={() => {
+                  setReply(false)
+                  setShowMore(true)
+                }}
                 level={level + 1}
               />
             </div>

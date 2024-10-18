@@ -81,7 +81,7 @@ export default async function DetailsPost({ params }: PageProps) {
           width={1920}
           height={1080}
           className='size-full rounded-t-lg object-cover'
-          priority
+          loading='lazy'
         />
       </div>
       <div className='col-span-7 space-y-10 pt-4 sm:p-4 md:p-4 md:py-8 md:pl-10 md:pr-6 lg:col-span-5'>

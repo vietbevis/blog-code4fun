@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import DOMPurify from 'dompurify'
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
@@ -88,17 +89,23 @@ const FormNewPost = ({ tags, categories, draft }: FormNewPostProps) => {
 
   // 2. Define a submit handler.
   async function onSubmit(data: NewPostBodyType) {
-    toast.promise(createPostMutation(data), {
-      loading: `Uploading 1 post...`,
-      success: () => {
-        saveDraft({} as NewPostBodyType)
-        router.replace(ROUTES.HOME)
-        router.refresh()
-        form.reset()
-        return `Create new post successfully`
-      },
-      error: `Failed to upload 1 post`
-    })
+    toast.promise(
+      createPostMutation({
+        ...data,
+        content: DOMPurify.sanitize(data.content)
+      }),
+      {
+        loading: `Uploading 1 post...`,
+        success: () => {
+          saveDraft({} as NewPostBodyType)
+          router.replace(ROUTES.HOME)
+          router.refresh()
+          form.reset()
+          return `Create new post successfully`
+        },
+        error: `Failed to upload 1 post`
+      }
+    )
   }
 
   return (

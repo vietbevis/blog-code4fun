@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import DOMPurify from 'dompurify'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -62,12 +63,16 @@ const FormComment = ({
 
   // 2. Define a submit handler.
   async function onSubmit(data: CommentBodyType) {
+    const body = {
+      ...data,
+      content: DOMPurify.sanitize(data.content)
+    }
     if (isPending) return
     try {
       if (type === 'CREATE') {
-        await createComment(data)
+        await createComment(body)
       } else {
-        await updateComment({ body: data, commentId: commentId })
+        await updateComment({ body, commentId: commentId })
       }
       if (onSuccess) onSuccess()
       form.reset()
@@ -78,7 +83,11 @@ const FormComment = ({
   return (
     <UnauthenticatedWrapper>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4' autoComplete='false'>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className='min-h-32 space-y-4'
+          autoComplete='false'
+        >
           <FormField
             control={form.control}
             name='content'

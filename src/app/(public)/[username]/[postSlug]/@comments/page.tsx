@@ -2,6 +2,8 @@ import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
+import FormComment from '@/components/comment/FormComment'
+
 import CommentService from '@/services/comment.service'
 
 import { PostType } from '@/types/auth.type'
@@ -10,7 +12,6 @@ import { getQueryClient } from '@/lib/getQueryClient'
 
 import { getPostDetails } from '../layout'
 import Comments from './Comments'
-import FormComment from './FormComment'
 
 const CommentPage = async ({ params }: { params: { username: string; postSlug: string } }) => {
   let post: PostType
