@@ -32,7 +32,7 @@ import { MultiSelect } from '@/components/ui/multi-select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
 
-import { useCreatePost, useGetDraft, useSaveDraft } from '@/services/queries/post.query'
+import { useCreatePost, useSaveDraft } from '@/services/queries/post.query'
 
 import useDialogStore from '@/stores/dialog.store'
 import useLoadingStore from '@/stores/loading'
@@ -47,22 +47,28 @@ import ROUTES from '@/constants/route'
 
 import { cn, replaceSpecialChars } from '@/lib/utils'
 
-const FormNewPost = ({ tags, categories }: { tags: string[]; categories: Category[] }) => {
+interface FormNewPostProps {
+  tags: string[]
+  categories: Category[]
+  draft: NewPostBodyType
+}
+
+const FormNewPost = ({ tags, categories, draft }: FormNewPostProps) => {
   const { mutateAsync: createPostMutation } = useCreatePost()
   const { isLoading } = useLoadingStore()
   const { mutate: saveDraft } = useSaveDraft()
-  const { data } = useGetDraft()
   const { openDialog } = useDialogStore()
   const router = useRouter()
+
   const form = useForm<NewPostBodyType>({
     resolver: zodResolver(FormNewPostSchema),
     defaultValues: {
-      content: '<p></p>',
-      thumbnails: [],
-      shortDescription: '',
-      title: '',
-      tags: [],
-      categoryId: ''
+      content: draft.content || '<p></p>',
+      thumbnails: draft.thumbnails || [],
+      shortDescription: draft.shortDescription || '',
+      title: draft.title || '',
+      tags: draft.tags || [],
+      categoryId: draft.categoryId || ''
     }
   })
 
@@ -77,13 +83,6 @@ const FormNewPost = ({ tags, categories }: { tags: string[]; categories: Categor
   }, 2000)
 
   useEffect(() => {
-    if (data) {
-      form.reset(data.payload.details)
-    }
-  }, [data, form])
-
-  useEffect(() => {
-    // Gọi saveDraft mỗi khi bất kỳ field nào thay đổi
     handleChange(allFields as NewPostBodyType)
   }, [allFields, handleChange])
 
@@ -92,6 +91,7 @@ const FormNewPost = ({ tags, categories }: { tags: string[]; categories: Categor
     toast.promise(createPostMutation(data), {
       loading: `Uploading 1 post...`,
       success: () => {
+        saveDraft({} as NewPostBodyType)
         router.replace(ROUTES.HOME)
         router.refresh()
         form.reset()
@@ -208,7 +208,7 @@ const FormNewPost = ({ tags, categories }: { tags: string[]; categories: Categor
                       label: tag
                     }))}
                     onValueChange={field.onChange}
-                    defaultValue={[]}
+                    defaultValue={field.value}
                     placeholder='Select tags you like...'
                   />
                 </FormControl>

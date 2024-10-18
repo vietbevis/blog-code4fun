@@ -89,6 +89,7 @@ const FormComment = ({
                   <MinimalTiptapCommentsEditor
                     value={field.value}
                     onChange={field.onChange}
+                    throttleDelay={500}
                     className='w-full'
                     editorContentClassName='p-5'
                     output='html'

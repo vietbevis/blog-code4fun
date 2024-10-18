@@ -81,7 +81,8 @@ const PostService = {
     http.get<DraftPostResponseType>(ROUTES.BACKEND.SAVE_DRAFT, {
       headers: {
         Authorization: `Bearer ${accessToken}`
-      }
+      },
+      cache: 'no-store'
     })
 }
 

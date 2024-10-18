@@ -3,7 +3,7 @@ import React from 'react'
 
 import PostService from '@/services/post.service'
 
-import { CategoryResponseType, TagsResponseType } from '@/types/auth.type'
+import { CategoryResponseType, DraftPostResponseType, TagsResponseType } from '@/types/auth.type'
 
 import { EKeyToken } from '@/constants/enum'
 
@@ -22,22 +22,28 @@ const NewsPage = async () => {
   let data:
     | [
         { status: number; payload: TagsResponseType },
-        { status: number; payload: CategoryResponseType }
-        // { status: number; payload: any }
+        { status: number; payload: CategoryResponseType },
+        { status: number; payload: DraftPostResponseType }
       ]
     | [] = []
 
   try {
     data = await Promise.all([
       PostService.getTags(),
-      PostService.getCategory({})
-      // PostService.sGetDraft(accessToken)
+      PostService.getCategory({}),
+      PostService.sGetDraft(accessToken)
     ])
   } catch (error: any) {
     return <div>Failed to load data {error.message}</div>
   }
 
-  return <FormNewPost tags={data[0].payload.details} categories={data[1].payload.details.records} />
+  return (
+    <FormNewPost
+      tags={data[0].payload.details}
+      categories={data[1].payload.details.records}
+      draft={data[2].payload.details}
+    />
+  )
 }
 
 export default NewsPage
