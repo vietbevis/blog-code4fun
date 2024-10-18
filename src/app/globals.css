@@ -90,6 +90,10 @@
 }
 /* End custom scroll bar */
 
+html {
+  scroll-behavior: smooth;
+}
+
 .button-scroll-top {
   bottom: 2rem;
   right: 2rem;

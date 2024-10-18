@@ -40,12 +40,12 @@ const Post = ({ data }: { data: PostType }) => {
             {/* Title */}
             <Link
               href={`/${data.createdBy.userName}/${data.slug}`}
-              className='line-clamp-3 break-all text-2xl font-bold'
+              className='line-clamp-3 text-2xl font-bold'
             >
               {data.title}
             </Link>
             {/* Description */}
-            <p className='mt-2 line-clamp-2 break-all text-sm text-muted-foreground sm:line-clamp-3 sm:text-base'>
+            <p className='mt-2 line-clamp-2 text-sm text-muted-foreground sm:line-clamp-3 sm:text-base'>
               {data.shortDescription}
             </p>
           </div>

@@ -60,11 +60,11 @@ const RenderPostDetails: React.FC<{ post: PostType }> = ({ post }) => {
 
   return (
     <div className='prose prose-base max-w-none overflow-hidden dark:prose-invert md:prose-lg prose-a:italic prose-a:text-blue-500'>
-      <h1 className='break-all'>{post.title}</h1>
+      <h1>{post.title}</h1>
       <div className='not-prose flex flex-wrap gap-2'>
         <ListTags data={post.tags} />
       </div>
-      <p className='break-all'>{post.shortDescription}</p>
+      <p>{post.shortDescription}</p>
       <article dangerouslySetInnerHTML={content} />
     </div>
   )

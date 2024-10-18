@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import React from 'react'
 
 import { CardAuthorDetailPost } from '@/components/author'
-import { ButtonLike, ButtonShare } from '@/components/buttons'
+import { ButtonComment, ButtonLike, ButtonShare } from '@/components/buttons'
 
 import AccountService from '@/services/account.service'
 import PostService from '@/services/post.service'
@@ -46,18 +46,19 @@ export default async function Layout({ children, comments, params }: LayoutProps
   }
 
   return (
-    <div className='pb-20 pt-4 md:container sm:bg-background md:pb-4'>
-      <article className='gap-4 sm:flex'>
-        <aside className='fixed bottom-0 left-0 z-40 mt-16 grid h-14 w-screen grid-cols-2 place-items-center gap-2 rounded-md border-t border-t-input bg-card sm:static sm:right-full sm:top-20 sm:h-fit sm:w-10 sm:grid-cols-1 sm:grid-rows-3 sm:rounded-none sm:border-none sm:bg-transparent'>
+    <div className='pb-20 pt-4 sm:bg-background md:pb-4'>
+      <article className='w-full gap-4 sm:flex'>
+        <aside className='fixed bottom-0 left-0 z-40 mt-16 grid h-14 w-screen shrink-0 grid-cols-3 place-items-center gap-2 rounded-md border-t border-t-input bg-card sm:static sm:right-full sm:top-20 sm:h-fit sm:w-10 sm:grid-cols-1 sm:grid-rows-3 sm:rounded-none sm:border-none sm:bg-transparent'>
           <ButtonLike post={post} />
+          <ButtonComment />
           <ButtonShare />
         </aside>
-        <div className='flex w-full flex-col gap-4 lg:flex-row'>
+        <div className='flex flex-1 flex-col gap-4 lg:flex-row'>
           <main className='flex-1 space-y-4'>
             {children}
             <div className='w-full rounded-lg border border-input bg-card'>{comments}</div>
           </main>
-          <aside className='basis-[28%]'>
+          <aside className='shrink-0 basis-[28%]'>
             <CardAuthorDetailPost createdBy={user} />
           </aside>
         </div>
