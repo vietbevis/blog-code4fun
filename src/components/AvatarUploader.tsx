@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Slider } from '@/components/ui/slider'
 
-import useUploadMediaMutation from '@/services/queries/media'
+import useUploadMediaMutation from '@/services/queries/media.query'
 
 import { getCroppedImg } from '@/lib/cropImage'
 import { checkImageURL } from '@/lib/utils'

@@ -13,5 +13,6 @@ export enum EKeyQuery {
   ACCOUNT_ME = 'account-me',
   ACCOUNT_USER = 'account-user',
   FEED_POSTS = 'feed-posts',
-  TAGS = 'tags'
+  TAGS = 'tags',
+  DRAFT = 'draft'
 }

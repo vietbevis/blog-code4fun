@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { useDetailPost, useLikePost } from '@/services/queries/post'
+import { useDetailPost, useLikePost } from '@/services/queries/post.query'
 
 import useAuthStore from '@/stores/auth.store'
 import useDialogStore from '@/stores/dialog.store'

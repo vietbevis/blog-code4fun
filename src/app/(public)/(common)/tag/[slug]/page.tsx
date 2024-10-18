@@ -2,7 +2,7 @@ import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 
 import PostList from '@/components/post/PostList'
 
-import PostService from '@/services/post'
+import PostService from '@/services/post.service'
 
 import envConfig from '@/configs/envConfig'
 

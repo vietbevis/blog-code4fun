@@ -6,7 +6,7 @@ import Post from '@/components/post/Post'
 import PostSkeleton from '@/components/skeletons/PostSkeleton'
 import InfiniteScrollContainer from '@/components/ui/infinite-scoll-container'
 
-import { useInfiniteScrollSearchPosts } from '@/services/queries/post'
+import { useInfiniteScrollSearchPosts } from '@/services/queries/post.query'
 
 const PostListSearch = ({ query }: { query: string }) => {
   const { data, error, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } =

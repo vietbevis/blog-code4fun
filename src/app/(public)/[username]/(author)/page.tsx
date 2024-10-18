@@ -4,7 +4,7 @@ import React from 'react'
 import PostList from '@/components/post/PostList'
 
 import AccountService from '@/services/account.service'
-import PostService from '@/services/post'
+import PostService from '@/services/post.service'
 
 import envConfig from '@/configs/envConfig'
 

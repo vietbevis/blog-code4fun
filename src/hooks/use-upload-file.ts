@@ -3,7 +3,7 @@ import * as React from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import useUploadMediaMutation from '@/services/queries/media'
+import useUploadMediaMutation from '@/services/queries/media.query'
 
 import { UploadFileResponseType } from '@/types/auth.type'
 

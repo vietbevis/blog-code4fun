@@ -1,8 +1,11 @@
+import { cookies } from 'next/headers'
 import React from 'react'
 
-import PostService from '@/services/post'
+import PostService from '@/services/post.service'
 
 import { CategoryResponseType, TagsResponseType } from '@/types/auth.type'
+
+import { EKeyToken } from '@/constants/enum'
 
 import FormNewPost from './FormNewPost'
 
@@ -14,15 +17,22 @@ export async function generateMetadata() {
 }
 
 const NewsPage = async () => {
+  const cookieStore = cookies()
+  const accessToken = cookieStore.get(EKeyToken.ACCESS_TOKEN)?.value || ''
   let data:
     | [
         { status: number; payload: TagsResponseType },
         { status: number; payload: CategoryResponseType }
+        // { status: number; payload: any }
       ]
     | [] = []
 
   try {
-    data = await Promise.all([PostService.getTags(), PostService.getCategory({})])
+    data = await Promise.all([
+      PostService.getTags(),
+      PostService.getCategory({})
+      // PostService.sGetDraft(accessToken)
+    ])
   } catch (error: any) {
     return <div>Failed to load data {error.message}</div>
   }

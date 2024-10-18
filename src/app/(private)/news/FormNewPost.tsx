@@ -2,8 +2,8 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import React from 'react'
-import { useForm } from 'react-hook-form'
+import React, { useEffect } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { MinimalTiptapEditor } from '@/components/minimal-tiptap'
@@ -32,10 +32,12 @@ import { MultiSelect } from '@/components/ui/multi-select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
 
-import { useCreatePost } from '@/services/queries/post'
+import { useCreatePost, useGetDraft, useSaveDraft } from '@/services/queries/post.query'
 
 import useDialogStore from '@/stores/dialog.store'
 import useLoadingStore from '@/stores/loading'
+
+import { useDebouncedCallback } from '@/hooks/useDebouncedCallback'
 
 import { Category } from '@/types/auth.type'
 
@@ -48,6 +50,8 @@ import { cn, replaceSpecialChars } from '@/lib/utils'
 const FormNewPost = ({ tags, categories }: { tags: string[]; categories: Category[] }) => {
   const { mutateAsync: createPostMutation } = useCreatePost()
   const { isLoading } = useLoadingStore()
+  const { mutate: saveDraft } = useSaveDraft()
+  const { data } = useGetDraft()
   const { openDialog } = useDialogStore()
   const router = useRouter()
   const form = useForm<NewPostBodyType>({
@@ -61,6 +65,27 @@ const FormNewPost = ({ tags, categories }: { tags: string[]; categories: Categor
       categoryId: ''
     }
   })
+
+  const allFields = useWatch({ control: form.control })
+
+  const handleChange = useDebouncedCallback((data: NewPostBodyType) => {
+    try {
+      saveDraft(data)
+    } catch (error) {
+      console.log('🚀 ~ file: FormNewPost.tsx:73 ~ handleChange ~ error:', error)
+    }
+  }, 2000)
+
+  useEffect(() => {
+    if (data) {
+      form.reset(data.payload.details)
+    }
+  }, [data, form])
+
+  useEffect(() => {
+    // Gọi saveDraft mỗi khi bất kỳ field nào thay đổi
+    handleChange(allFields as NewPostBodyType)
+  }, [allFields, handleChange])
 
   // 2. Define a submit handler.
   async function onSubmit(data: NewPostBodyType) {

@@ -78,7 +78,6 @@ const FormRegister = () => {
             />
             {error && (
               <Alert variant='destructive'>
-                <ExclamationTriangleIcon className='size-4' />
                 <AlertDescription>
                   {(error as any).payload?.message ||
                     (error as any).payload?.error ||

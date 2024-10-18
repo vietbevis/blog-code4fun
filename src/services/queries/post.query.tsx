@@ -12,7 +12,7 @@ import { PostQueryParams, PostTypeResponse } from '@/types/auth.type'
 
 import { EKeyQuery } from '@/constants/enum'
 
-import PostService from '../post'
+import PostService from '../post.service'
 import revalidateApiRequest from '../revalidate'
 
 export const useDetailPost = ({ slug }: { slug: string }) => {
@@ -155,5 +155,22 @@ export const useInfiniteScrollSearchPosts = (query?: string) => {
     initialPageParam: 0,
     getNextPageParam: (lastPage) =>
       lastPage.nextPage < lastPage.totalPage ? lastPage.nextPage : undefined
+  })
+}
+
+export const useSaveDraft = () => {
+  return useMutation({
+    mutationFn: PostService.saveDraft,
+    onError: (error) => {
+      console.log('🚀 ~ file: post.query.tsx:165 ~ useSaveDraft ~ error:', error)
+    }
+  })
+}
+
+export const useGetDraft = () => {
+  return useQuery({
+    queryKey: [EKeyQuery.DRAFT],
+    queryFn: PostService.getDraft,
+    staleTime: Infinity
   })
 }

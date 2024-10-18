@@ -7,7 +7,7 @@ import useAuthStore from '@/stores/auth.store'
 
 import ROUTES from '@/constants/route'
 
-import { checkAndRefreshToken } from '@/lib/utils'
+import { checkAndRefreshToken } from '@/lib/decodeToken'
 
 const UNAUTHENTICATED_PATH = [ROUTES.LOGIN, ROUTES.REGISTER]
 

@@ -4,7 +4,7 @@ import React from 'react'
 import SidebarLeft from '@/components/sidebars/SidebarLeft'
 import SidebarRight from '@/components/sidebars/SidebarRight'
 
-import PostService from '@/services/post'
+import PostService from '@/services/post.service'
 
 import { EKeyQuery } from '@/constants/enum'
 

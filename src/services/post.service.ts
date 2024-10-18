@@ -1,5 +1,6 @@
 import {
   CategoryResponseType,
+  DraftPostResponseType,
   ListPostTypeResponse,
   PostQueryParams,
   PostTypeResponse,
@@ -73,7 +74,15 @@ const PostService = {
       ...(query && { search: query.toString() })
     })
     return http.get<ListPostTypeResponse>(`${ROUTES.BACKEND.SEARCH}?${searchParams.toString()}`)
-  }
+  },
+  saveDraft: (data: NewPostBodyType) => http.post(ROUTES.BACKEND.SAVE_DRAFT, data),
+  getDraft: () => http.get<DraftPostResponseType>(ROUTES.BACKEND.SAVE_DRAFT),
+  sGetDraft: (accessToken: string) =>
+    http.get<DraftPostResponseType>(ROUTES.BACKEND.SAVE_DRAFT, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    })
 }
 
 export default PostService

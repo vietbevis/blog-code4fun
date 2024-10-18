@@ -38,6 +38,7 @@ const ROUTES = {
     POST_TAGS: 'public/posts/post-tags',
     SEARCH: 'public/posts/search-articles',
     POST_CATEGORY: 'public/category',
+    SAVE_DRAFT: 'posts/draft',
 
     // Comment routes
     GET_COMMENTS: 'public/comments',

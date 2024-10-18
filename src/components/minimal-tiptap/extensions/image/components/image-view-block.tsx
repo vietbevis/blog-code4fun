@@ -2,7 +2,7 @@
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react'
 import { useEffect, useRef, useState } from 'react'
 
-import useUploadMediaMutation from '@/services/queries/media'
+import useUploadMediaMutation from '@/services/queries/media.query'
 
 import useLoadingStore from '@/stores/loading'
 

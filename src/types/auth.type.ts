@@ -1,3 +1,5 @@
+import { NewPostBodyType } from '@/schemas/auth.schema'
+
 // Common types
 export type ID = string
 
@@ -180,4 +182,5 @@ export type TagsResponseType = ResponseMainType & { details: string[] }
 export type ErrorResponseType = ResponseMainType & { error: any }
 export type CreateCommentResponseType = ResponseMainType & { details: CommentType }
 export type ListCommentResponseType = PaginatedResponse<CommentType>
+export type DraftPostResponseType = ResponseMainType & { details: NewPostBodyType }
 export type CategoryResponseType = PaginatedResponse<Category>

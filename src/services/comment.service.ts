@@ -21,7 +21,10 @@ const CommentService = {
     return http.get<ListCommentResponseType>(
       `${ROUTES.BACKEND.GET_COMMENTS}/${postId}?${createSearchParam<PaginateParams>(params)}`,
       {
-        baseUrl: envConfig.NEXT_PUBLIC_API_ENDPOINT_V2
+        baseUrl: envConfig.NEXT_PUBLIC_API_ENDPOINT_V2,
+        next: {
+          tags: [`comments-${postId}`]
+        }
       }
     )
   },

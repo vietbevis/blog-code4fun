@@ -19,12 +19,9 @@ type GoogleAuthState = {
 
 export function useGoogleAuth() {
   const router = useRouter()
-  const { mutateAsync } = useLoginGoogleMutation()
+  const { mutateAsync, isPending } = useLoginGoogleMutation(() => {})
   const { deviceId, deviceType } = getDeviceInfo()
-  const [state, setState] = useState<GoogleAuthState>({
-    isLoading: false,
-    isPopupOpen: false
-  })
+  const [state, setState] = useState<GoogleAuthState>({ isLoading: false, isPopupOpen: false })
 
   const popupRef = useRef<Window | null>(null)
   const checkPopupIntervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -49,9 +46,7 @@ export function useGoogleAuth() {
     setState((prevState) => ({ ...prevState, isPopupOpen: false, isLoading: false }))
   }, [])
 
-  useEffect(() => {
-    return cleanup
-  }, [cleanup])
+  useEffect(() => cleanup, [cleanup])
 
   const handleGoogleLogin = useCallback(() => {
     if (state.isPopupOpen) {
@@ -72,7 +67,7 @@ export function useGoogleAuth() {
     })
     const googleLoginUrl = `${authUri}?${params.toString()}`
 
-    cleanup() // Ensure any previous state is cleared
+    cleanup()
 
     popupRef.current = openCenteredPopup(googleLoginUrl)
 
@@ -82,12 +77,8 @@ export function useGoogleAuth() {
 
         if (event.data.type === 'GOOGLE_AUTH_SUCCESS' && event.data.code) {
           cleanup()
-          const data = {
-            code: event.data.code,
-            deviceInfo: { deviceId, deviceType }
-          }
           try {
-            await mutateAsync(data)
+            await mutateAsync({ code: event.data.code, deviceInfo: { deviceId, deviceType } })
             router.replace(ROUTES.HOME)
           } catch (error) {
             console.error('Google login error:', error)
@@ -101,15 +92,14 @@ export function useGoogleAuth() {
       window.addEventListener('message', messageListenerRef.current)
 
       checkPopupIntervalRef.current = setInterval(() => {
-        if (popupRef.current?.closed) {
+        if (popupRef.current?.closed && !isPending) {
           cleanup()
-          toast.info('Đăng nhập đã bị hủy', {
+          toast.info('Đăng nhập đã bị hủy 1', {
             description: 'Bạn đã đóng cửa sổ đăng nhập Google.'
           })
         }
       }, 500)
 
-      // Prevent navigation while popup is open
       const handleBeforeUnload = (e: BeforeUnloadEvent) => {
         if (state.isPopupOpen) {
           e.preventDefault()
@@ -118,20 +108,18 @@ export function useGoogleAuth() {
       }
       window.addEventListener('beforeunload', handleBeforeUnload)
 
-      return () => {
-        window.removeEventListener('beforeunload', handleBeforeUnload)
-      }
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload)
     } else {
       setState((prevState) => ({ ...prevState, isLoading: false, isPopupOpen: false }))
       toast.error('Không thể mở cửa sổ đăng nhập', {
         description: 'Vui lòng kiểm tra cài đặt trình duyệt của bạn.'
       })
     }
-  }, [cleanup, deviceId, deviceType, mutateAsync, router, state.isPopupOpen])
+  }, [cleanup, deviceId, deviceType, isPending, mutateAsync, router, state.isPopupOpen])
 
   const cancelGoogleLogin = useCallback(() => {
     cleanup()
-    toast.info('Đăng nhập đã bị hủy', {
+    toast.info('Đăng nhập đã bị hủy 2', {
       description: 'Bạn đã đóng cửa sổ đăng nhập Google.'
     })
   }, [cleanup])
@@ -147,8 +135,8 @@ export function useGoogleAuth() {
 const openCenteredPopup = (url: string): Window | null => {
   const width = 500
   const height = 600
-  const screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX
-  const screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY
+  const screenLeft = window.screenLeft ?? window.screenX
+  const screenTop = window.screenTop ?? window.screenY
   const screenWidth = window.innerWidth || document.documentElement.clientWidth || screen.width
   const screenHeight = window.innerHeight || document.documentElement.clientHeight || screen.height
   const left = screenLeft + (screenWidth - width) / 2

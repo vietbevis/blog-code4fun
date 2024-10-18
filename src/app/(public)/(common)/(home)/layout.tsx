@@ -2,7 +2,7 @@ import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 import Image from 'next/image'
 import React from 'react'
 
-import PostService from '@/services/post'
+import PostService from '@/services/post.service'
 
 import { EKeyQuery } from '@/constants/enum'
 

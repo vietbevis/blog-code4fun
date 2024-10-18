@@ -5,7 +5,7 @@ import { CardAuthorDetailPost } from '@/components/author'
 import { ButtonLike, ButtonShare } from '@/components/buttons'
 
 import AccountService from '@/services/account.service'
-import PostService from '@/services/post'
+import PostService from '@/services/post.service'
 
 import { AccountType, PostType } from '@/types/auth.type'
 

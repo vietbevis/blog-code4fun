@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { KeyboardEvent, Suspense, useEffect, useRef, useState } from 'react'
 
-import { useInfiniteScrollSearchPosts } from '@/services/queries/post'
+import { useInfiniteScrollSearchPosts } from '@/services/queries/post.query'
 
 import { useClickOutside } from '@/hooks/useClickOutside'
 import { useDebouncedCallback } from '@/hooks/useDebouncedCallback'

@@ -15,7 +15,7 @@ import {
   FormMessage
 } from '@/components/ui/form'
 
-import { useCreateComment, useUpdateComment } from '@/services/queries/comments'
+import { useCreateComment, useUpdateComment } from '@/services/queries/comments.query'
 
 import useLoadingStore from '@/stores/loading'
 
@@ -28,6 +28,7 @@ interface FormCommentProps {
   defaultValues?: string
   commentId?: string
   onSuccess?: () => void
+  level: number
 }
 
 const FormComment = ({
@@ -36,11 +37,12 @@ const FormComment = ({
   type = 'CREATE',
   defaultValues = '<p></p>',
   commentId = '',
-  onSuccess
+  onSuccess,
+  level
 }: FormCommentProps) => {
   const { setIsLoading } = useLoadingStore()
-  const { mutateAsync: createComment, isPending } = useCreateComment()
-  const { mutateAsync: updateComment, isPending: loading } = useUpdateComment()
+  const { mutateAsync: createComment, isPending } = useCreateComment(level)
+  const { mutateAsync: updateComment, isPending: loading } = useUpdateComment(level)
   const form = useForm<CommentBodyType>({
     resolver: zodResolver(FormCommentSchema),
     defaultValues: {

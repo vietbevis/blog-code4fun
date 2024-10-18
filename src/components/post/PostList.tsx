@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { useInfiniteScrollPosts } from '@/services/queries/post'
+import { useInfiniteScrollPosts } from '@/services/queries/post.query'
 
 import { PostQueryParams } from '@/types/auth.type'
 
