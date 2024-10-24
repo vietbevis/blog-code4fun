@@ -1,7 +1,6 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -55,6 +54,7 @@ const FormLogin = ({
     if (isLoading || isPending) return
     try {
       await login(values)
+
       if (searchParams.redirect) {
         location.href = decodeURIComponent(searchParams.redirect)
       } else {

@@ -6,7 +6,11 @@ import {
 } from '@/types/auth.type'
 
 import { LoginBodyType, RegisterBodyType } from '@/schemas'
-import { LoginGoogleBodyType, UpdatePasswordType } from '@/schemas/auth.schema'
+import {
+  LoginGoogleBodyType,
+  NotificationBodyType,
+  UpdatePasswordType
+} from '@/schemas/auth.schema'
 
 import ROUTES from '@/constants/route'
 
@@ -56,6 +60,8 @@ const AuthService = {
         }
       }
     ),
+  tokenNotifications: (body: NotificationBodyType) =>
+    http.put(ROUTES.BACKEND.TOKEN_NOTIFICATIONS, body),
   changePassword: (body: UpdatePasswordType) => http.put(ROUTES.BACKEND.CHANGE_PASSWORD, body),
 
   // xử lý trường hợp duplicate request lúc reload page hoặc vào page lần đầu hay chuyển page

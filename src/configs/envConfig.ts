@@ -8,7 +8,8 @@ const envConfigSchema = z.object({
   NEXT_PUBLIC_LEVEL_COMMENT_MAX: z.number(),
   NEXT_PUBLIC_CLIENT_ID: z.string(),
   NEXT_PUBLIC_AUTH_URI: z.string(),
-  NEXT_PUBLIC_API_ENDPOINT_V2: z.string()
+  NEXT_PUBLIC_API_ENDPOINT_V2: z.string(),
+  NEXT_PUBLIC_FIREBASE_FCM_VAPID_KEY: z.string()
 })
 
 const configProject = envConfigSchema.safeParse({
@@ -19,7 +20,8 @@ const configProject = envConfigSchema.safeParse({
   NEXT_PUBLIC_LEVEL_COMMENT_MAX: Number(process.env.NEXT_PUBLIC_LEVEL_COMMENT_MAX),
   NEXT_PUBLIC_CLIENT_ID: process.env.NEXT_PUBLIC_CLIENT_ID,
   NEXT_PUBLIC_AUTH_URI: process.env.NEXT_PUBLIC_AUTH_URI,
-  NEXT_PUBLIC_API_ENDPOINT_V2: process.env.NEXT_PUBLIC_API_ENDPOINT_V2
+  NEXT_PUBLIC_API_ENDPOINT_V2: process.env.NEXT_PUBLIC_API_ENDPOINT_V2,
+  NEXT_PUBLIC_FIREBASE_FCM_VAPID_KEY: process.env.NEXT_PUBLIC_FIREBASE_FCM_VAPID_KEY
 })
 
 if (!configProject.success) {

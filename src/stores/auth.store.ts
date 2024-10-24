@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
+import AuthService from '@/services/auth.service'
+
 import { LoginResponseType, RoleType } from '@/types/auth.type'
 
 import { decodeToken } from '@/lib/decodeToken'
@@ -10,21 +12,32 @@ interface AuthState {
   userId: string | null
   token: LoginResponseType | null
   roles: RoleType[]
-  login: (token: LoginResponseType) => void
+  tokenNotifications: string | null
+  login: (token: LoginResponseType) => Promise<void>
   logout: () => void
+  setTokenNotifications: (token: string) => void
 }
 
 const useAuthStore = create<AuthState>()(
   devtools(
     persist<AuthState>(
-      (set) => ({
+      (set, get) => ({
         isAuth: false,
         userId: null,
         token: null,
+        tokenNotifications: null,
         roles: [],
-        login: (token: LoginResponseType) => {
+        setTokenNotifications: (token) => set({ tokenNotifications: token }),
+        login: async (token: LoginResponseType) => {
           const decodedToken = decodeToken(token.accessToken)
           set({ isAuth: true, token, roles: decodedToken.roles, userId: decodedToken.userId })
+          const tokenNotifications = get().tokenNotifications
+          if (tokenNotifications !== null) {
+            await AuthService.tokenNotifications({
+              deviceToken: tokenNotifications,
+              userId: decodedToken.userId
+            })
+          }
         },
         logout: () => set({ isAuth: false, token: null, roles: [], userId: null })
       }),

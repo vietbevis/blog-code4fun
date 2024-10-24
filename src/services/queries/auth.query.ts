@@ -13,10 +13,16 @@ export const useLoginMutation = () => {
   const login = useAuthStore((state) => state.login)
   return useMutation({
     mutationFn: AuthService.login,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       login(data.payload)
       toast.success('Login successfully!')
     }
+  })
+}
+
+export const useNotificationTokenMutation = () => {
+  return useMutation({
+    mutationFn: AuthService.tokenNotifications
   })
 }
 

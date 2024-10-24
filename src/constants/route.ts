@@ -45,7 +45,10 @@ const ROUTES = {
     GET_CHILD_COMMENTS: 'public/comments/child',
     CREATE_COMMENT: 'comments',
     DELETE_COMMENT: 'comments/disable',
-    UPDATE_COMMENT: 'comments'
+    UPDATE_COMMENT: 'comments',
+
+    // Notification routes
+    TOKEN_NOTIFICATIONS: 'fcm/token'
   },
   HANDLER: {
     LOGIN: 'api/auth/login',

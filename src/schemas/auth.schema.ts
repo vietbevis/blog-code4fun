@@ -123,3 +123,14 @@ export const FormCommentSchema = z
   .strip()
 
 export type CommentBodyType = z.infer<typeof FormCommentSchema>
+
+// Notification schema
+export const NotificationSchema = z
+  .object({
+    deviceToken: z.string(),
+    userId: z.string()
+  })
+  .strict()
+  .strip()
+
+export type NotificationBodyType = z.infer<typeof NotificationSchema>
