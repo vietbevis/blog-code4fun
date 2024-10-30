@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
 import AuthProvider from '@/providers/auth-provider'
-import FirebaseProvider from '@/providers/firebase-provider'
+// import FirebaseProvider from '@/providers/firebase-provider'
 import NetworkProvider from '@/providers/network-provider'
 import ScrollTop from '@/providers/scroll-top-provider'
 import QueryProvider from '@/providers/tanstack-provider'
@@ -42,13 +42,13 @@ export default function RootLayout({
             <NetworkProvider>
               <QueryProvider>
                 <AuthProvider>
-                  <FirebaseProvider>
-                    <Header />
-                    <main>
-                      <div className='h-16 w-full bg-card'></div>
-                      <div className='container'>{children}</div>
-                    </main>
-                  </FirebaseProvider>
+                  {/* <FirebaseProvider> */}
+                  <Header />
+                  <main>
+                    <div className='h-16 w-full bg-card'></div>
+                    <div className='container'>{children}</div>
+                  </main>
+                  {/* </FirebaseProvider> */}
                 </AuthProvider>
               </QueryProvider>
             </NetworkProvider>

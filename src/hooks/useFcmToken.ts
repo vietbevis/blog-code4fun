@@ -7,8 +7,6 @@ import { toast } from 'sonner'
 
 import { fetchToken, messaging } from '@/configs/firebaseConfig'
 
-import useAuthStore from '@/stores/auth.store'
-
 /* eslint-disable react-hooks/exhaustive-deps */
 
 async function getNotificationPermissionAndToken() {
@@ -42,7 +40,6 @@ const useFcmToken = () => {
   const [token, setToken] = useState<string | null>(null) // State to store the FCM token.
   const retryLoadToken = useRef(0) // Ref to keep track of retry attempts.
   const isLoading = useRef(false) // Ref to keep track if a token fetch is currently in progress.
-  const setTokenNotifications = useAuthStore((state) => state.setTokenNotifications)
 
   const loadToken = async () => {
     // Step 4: Prevent multiple fetches if already fetched or in progress.
@@ -85,7 +82,6 @@ const useFcmToken = () => {
     // Step 7: Set the fetched token and mark as fetched.
     setNotificationPermissionStatus(Notification.permission)
     setToken(token)
-    setTokenNotifications(token)
     isLoading.current = false
   }
 

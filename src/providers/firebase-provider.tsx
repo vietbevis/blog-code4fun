@@ -7,8 +7,6 @@ import { toast } from 'sonner'
 
 import { fetchToken, messaging } from '@/configs/firebaseConfig'
 
-import useAuthStore from '@/stores/auth.store'
-
 /* eslint-disable react-hooks/exhaustive-deps */
 
 async function getNotificationPermissionAndToken() {
@@ -39,7 +37,6 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null)
   const retryLoadToken = useRef(0)
   const isLoading = useRef(false)
-  const setTokenNotifications = useAuthStore((state) => state.setTokenNotifications)
 
   const loadToken = async () => {
     if (isLoading.current) return
@@ -75,7 +72,6 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     setToken(token)
-    setTokenNotifications(token)
     isLoading.current = false
   }
 
