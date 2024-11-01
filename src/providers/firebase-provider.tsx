@@ -113,34 +113,35 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
               action: {
                 label: 'Visit',
                 onClick: () => router.push(link)
-              }
+              },
+              position: 'top-right'
             }
           )
         } else {
           toast.info(
-            `${payload.notification?.title || payload.notification?.body || 'New message'}`
+            `${payload.notification?.title || payload.notification?.body || 'New message'}`,
+            {
+              position: 'top-right'
+            }
           )
         }
 
         // --------------------------------------------
         // Disable this if you only want toast notifications.
-        // const n = new Notification(
-        //   payload.notification?.title || "New message",
-        //   {
-        //     body: payload.notification?.body || "This is a new message",
-        //     data: link ? { url: link } : undefined,
-        //   },
-        // );
+        // const n = new Notification(payload.notification?.title || 'New message', {
+        //   body: payload.notification?.body || 'This is a new message',
+        //   data: { url: `${envConfig.NEXT_PUBLIC_API_URL}/${userName}/${postSlug}` }
+        // })
 
         // n.onclick = (event) => {
-        //   event.preventDefault();
-        //   const link = (event.target as any)?.data?.url;
+        //   event.preventDefault()
+        //   // const link = (event.target as any)?.data?.url
         //   if (link) {
-        //     router.push(link);
+        //     router.push(link)
         //   } else {
-        //     console.log("No link found in the notification payload");
+        //     console.log('No link found in the notification payload')
         //   }
-        // };
+        // }
       })
 
       return unsubscribe
