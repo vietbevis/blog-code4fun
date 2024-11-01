@@ -22,6 +22,7 @@ const ROUTES = {
     GET_USER: 'public/users/byUserName',
     UPDATE_PROFILE: 'users/user-update',
     TOP_USERS: 'public/posts/users/top-posters',
+    NOTIFICATIONS: 'users/notifications',
 
     // Category routes
     CATEGORY: 'public/category',

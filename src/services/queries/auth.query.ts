@@ -20,12 +20,6 @@ export const useLoginMutation = () => {
   })
 }
 
-export const useNotificationTokenMutation = () => {
-  return useMutation({
-    mutationFn: AuthService.tokenNotifications
-  })
-}
-
 export const useRegisterMutation = () => {
   const router = useRouter()
   return useMutation({
@@ -47,6 +41,7 @@ export const useLogoutMutation = () => {
     onSuccess: () => {
       logout()
       queryClient.removeQueries({ queryKey: [EKeyQuery.ACCOUNT_ME] })
+      queryClient.removeQueries({ queryKey: [EKeyQuery.NOTIFICATIONS] })
       toast.success('Logout successfully!')
     }
   })

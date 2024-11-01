@@ -30,6 +30,7 @@ import { Button } from '../ui/button'
 import Icon from '../ui/icon'
 import { ModeToggle } from '../ui/mode-toggle'
 import AvatarDropdown from './AvatarDropdown'
+import Notifications from './Notifications'
 
 const headerStyles = {
   base: 'fixed inset-x-0 top-0 z-50 h-16 bg-card shadow transition-transform duration-300',
@@ -99,9 +100,7 @@ const Header = React.memo(() => {
               <ModeToggle />
               {isAuth ? (
                 <>
-                  {/* <Button size='icon' variant='outline' className='shrink-0 rounded-full'>
-                    <Icon name='Bell' className='size-5' />
-                  </Button> */}
+                  <Notifications />
                   <AvatarDropdown />
                 </>
               ) : (

@@ -1,5 +1,7 @@
 import { NewPostBodyType } from '@/schemas/auth.schema'
 
+import { ENotification } from '@/constants/enum'
+
 // Common types
 export type ID = string
 
@@ -185,6 +187,12 @@ export interface DataFormNotificationsType {
   userName: string
 }
 
+export interface NotificationType {
+  notificationType: ENotification
+  deviceTokenId: string
+  data: DataFormNotificationsType
+}
+
 export type ListPostTypeResponse = PaginatedResponse<PostType>
 export type AccountResponseType = ResponseMainType & { details: AccountType }
 export type TopUsersResponseType = ResponseMainType & { details: TopUserType[] }
@@ -193,4 +201,5 @@ export type ErrorResponseType = ResponseMainType & { error: any }
 export type CreateCommentResponseType = ResponseMainType & { details: CommentType }
 export type ListCommentResponseType = PaginatedResponse<CommentType>
 export type DraftPostResponseType = ResponseMainType & { details: NewPostBodyType }
+export type NotificationResponseType = ResponseMainType & { details: NotificationType[] }
 export type CategoryResponseType = PaginatedResponse<Category>

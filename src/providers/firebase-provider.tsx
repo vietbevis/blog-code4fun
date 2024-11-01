@@ -10,6 +10,10 @@ import { fetchToken, messaging } from '@/configs/firebaseConfig'
 
 import useAuthStore from '@/stores/auth.store'
 
+import { EKeyQuery } from '@/constants/enum'
+
+import { getQueryClient } from '@/lib/getQueryClient'
+
 /* eslint-disable react-hooks/exhaustive-deps */
 
 async function getNotificationPermissionAndToken() {
@@ -41,6 +45,7 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
   const retryLoadToken = useRef(0)
   const isLoading = useRef(false)
   const setTokenNotifications = useAuthStore((state) => state.setTokenNotifications)
+  const queryClient = getQueryClient()
 
   const loadToken = async () => {
     if (isLoading.current) return
@@ -97,9 +102,10 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
       const m = await messaging()
       if (!m) return
 
-      const unsubscribe = onMessage(m, (payload) => {
-        console.log('🚀 ~ file: firebase-provider.tsx:96 ~ unsubscribe ~ payload:', payload)
+      const unsubscribe = onMessage(m, async (payload) => {
         if (Notification.permission !== 'granted') return
+
+        await queryClient.invalidateQueries({ queryKey: [EKeyQuery.NOTIFICATIONS] })
 
         const userName = payload.data?.userName
         const postSlug = payload.data?.postSlug

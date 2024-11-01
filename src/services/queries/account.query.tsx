@@ -8,6 +8,7 @@ import { AccountResponseType } from '@/types/auth.type'
 import { EKeyQuery } from '@/constants/enum'
 
 import AccountService from '../account.service'
+import AuthService from '../auth.service'
 import revalidateApiRequest from '../revalidate'
 
 export const useAccountMe = () => {
@@ -30,9 +31,28 @@ export const useAccountUser = (username: string) => {
   })
 }
 
+export const useNotifications = () => {
+  const { data } = useAccountMe()
+  const userId = data?.id || ''
+  return useQuery({
+    queryKey: [EKeyQuery.NOTIFICATIONS],
+    queryFn: () => AccountService.getNotifications(userId),
+    enabled: !!userId,
+    select: (data) => data.payload.details,
+    refetchOnWindowFocus: true,
+    staleTime: 1000 * 5 // 5s re new data
+  })
+}
+
+export const useNotificationTokenMutation = () => {
+  return useMutation({
+    mutationFn: AuthService.tokenNotifications
+  })
+}
+
 export const useTopUsers = () => {
   return useQuery({
-    queryKey: ['top-users'],
+    queryKey: [EKeyQuery.TOP_USERS],
     queryFn: () => AccountService.getTopUsers(),
     select: (data) => data.payload.details
   })
@@ -70,7 +90,7 @@ export const useUpdateProfile = () => {
 
 export const useFollowUser = ({ username }: { username: string }) => {
   const queryClient = useQueryClient()
-  const queryKey: QueryKey = ['account-user', username]
+  const queryKey: QueryKey = [EKeyQuery.ACCOUNT_USER, username]
   return useMutation({
     mutationFn: AccountService.followUser,
     onMutate: async () => {

@@ -14,5 +14,11 @@ export enum EKeyQuery {
   ACCOUNT_USER = 'account-user',
   FEED_POSTS = 'feed-posts',
   TAGS = 'tags',
-  DRAFT = 'draft'
+  DRAFT = 'draft',
+  NOTIFICATIONS = 'notifications',
+  TOP_USERS = 'top-users'
+}
+
+export enum ENotification {
+  NEW_POST = 'NEW_POST'
 }
