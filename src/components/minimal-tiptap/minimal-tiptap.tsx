@@ -86,8 +86,8 @@ export const MinimalTiptapEditor = React.forwardRef<HTMLDivElement, MinimalTipta
     const editor = useMinimalTiptapEditor({
       value,
       onUpdate: onChange,
-      enableInputRules: false,
-      enablePasteRules: false,
+      enableInputRules: true,
+      enablePasteRules: true,
       ...props
     })
 

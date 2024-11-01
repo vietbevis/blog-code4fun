@@ -175,6 +175,16 @@ export interface CommentType {
   replies: CommentType[]
 }
 
+export interface DataFormNotificationsType {
+  postSlug: string
+  userIds: string
+  name: string
+  postTitle: string
+  userEmail: string
+  postId: string
+  userName: string
+}
+
 export type ListPostTypeResponse = PaginatedResponse<PostType>
 export type AccountResponseType = ResponseMainType & { details: AccountType }
 export type TopUsersResponseType = ResponseMainType & { details: TopUserType[] }

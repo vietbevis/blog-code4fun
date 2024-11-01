@@ -12,30 +12,35 @@ interface AuthState {
   userId: string | null
   token: LoginResponseType | null
   roles: RoleType[]
-  login: (token: LoginResponseType, fcmToken: string | null) => Promise<void>
+  tokenNotifications: string | null
+  login: (token: LoginResponseType) => Promise<void>
   logout: () => void
+  setTokenNotifications: (token: string) => void
 }
 
 const useAuthStore = create<AuthState>()(
   devtools(
     persist<AuthState>(
-      (set) => ({
+      (set, get) => ({
         isAuth: false,
         userId: null,
         token: null,
+        tokenNotifications: null,
         roles: [],
-        login: async (token: LoginResponseType, fcmToken: string | null) => {
+        setTokenNotifications: (token) => set({ tokenNotifications: token }),
+        login: async (token: LoginResponseType) => {
           const decodedToken = decodeToken(token.accessToken)
           set({ isAuth: true, token, roles: decodedToken.roles, userId: decodedToken.userId })
+          const tokenNotifications = get().tokenNotifications
           try {
-            if (fcmToken) {
+            if (tokenNotifications !== null) {
               await AuthService.tokenNotifications({
-                deviceToken: fcmToken,
+                deviceToken: tokenNotifications,
                 userId: decodedToken.userId
               })
             }
           } catch (error) {
-            console.log('🚀 ~ file: auth.store.ts:43 ~ login: ~ error:', error)
+            console.log('🚀 ~ file: auth.store.ts:38 ~ login: ~ error:', error)
           }
         },
         logout: () => set({ isAuth: false, token: null, roles: [], userId: null })

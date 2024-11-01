@@ -5,7 +5,10 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
+import envConfig from '@/configs/envConfig'
 import { fetchToken, messaging } from '@/configs/firebaseConfig'
+
+import useAuthStore from '@/stores/auth.store'
 
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -37,6 +40,7 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null)
   const retryLoadToken = useRef(0)
   const isLoading = useRef(false)
+  const setTokenNotifications = useAuthStore((state) => state.setTokenNotifications)
 
   const loadToken = async () => {
     if (isLoading.current) return
@@ -55,7 +59,7 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (!token) {
       if (retryLoadToken.current >= 3) {
-        alert('Unable to load token, refresh the browser')
+        // alert('Unable to load token, refresh the browser')
         console.info(
           '%cPush Notifications issue - unable to load token after 3 retries',
           'color: green; background: #c7c7c7; padding: 8px; font-size: 20px'
@@ -72,6 +76,7 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     setToken(token)
+    setTokenNotifications(token)
     isLoading.current = false
   }
 
@@ -93,24 +98,28 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
       if (!m) return
 
       const unsubscribe = onMessage(m, (payload) => {
+        console.log('🚀 ~ file: firebase-provider.tsx:96 ~ unsubscribe ~ payload:', payload)
         if (Notification.permission !== 'granted') return
 
-        const link = payload.fcmOptions?.link || payload.data?.link
+        const userName = payload.data?.userName
+        const postSlug = payload.data?.postSlug
+
+        const link = `${envConfig.NEXT_PUBLIC_API_URL}/${userName}/${postSlug}`
 
         if (link) {
-          toast.info(`${payload.notification?.title}: ${payload.notification?.body}`, {
-            action: {
-              label: 'Visit',
-              onClick: () => {
-                const link = payload.fcmOptions?.link || payload.data?.link
-                if (link) {
-                  router.push(link)
-                }
+          toast.info(
+            `${payload.notification?.title || payload.notification?.body || 'New message'}`,
+            {
+              action: {
+                label: 'Visit',
+                onClick: () => router.push(link)
               }
             }
-          })
+          )
         } else {
-          toast.info(`${payload.notification?.title}: ${payload.notification?.body}`)
+          toast.info(
+            `${payload.notification?.title || payload.notification?.body || 'New message'}`
+          )
         }
 
         // --------------------------------------------

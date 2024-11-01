@@ -4,8 +4,6 @@ import { toast } from 'sonner'
 
 import useAuthStore from '@/stores/auth.store'
 
-import useFcmToken from '@/hooks/useFcmToken'
-
 import { EKeyQuery } from '@/constants/enum'
 import ROUTES from '@/constants/route'
 
@@ -13,11 +11,10 @@ import AuthService from '../auth.service'
 
 export const useLoginMutation = () => {
   const login = useAuthStore((state) => state.login)
-  const { token } = useFcmToken()
   return useMutation({
     mutationFn: AuthService.login,
     onSuccess: async (data) => {
-      login(data.payload, token)
+      login(data.payload)
       toast.success('Login successfully!')
     }
   })
@@ -57,11 +54,10 @@ export const useLogoutMutation = () => {
 
 export const useLoginGoogleMutation = (onSuccess?: () => void) => {
   const login = useAuthStore((state) => state.login)
-  const { token } = useFcmToken()
   return useMutation({
     mutationFn: AuthService.loginGoogle,
     onSuccess: (data) => {
-      login(data.payload, token)
+      login(data.payload)
       if (onSuccess) {
         onSuccess()
       }
