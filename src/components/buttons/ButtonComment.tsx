@@ -1,13 +1,20 @@
+'use client'
+
 import { MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
+import { useInfiniteScrollComments } from '@/services/queries/comments.query'
+
 import { Button } from '../ui/button'
 
-const ButtonComment = ({ totalComments }: { totalComments?: number }) => {
+const ButtonComment = ({ postId }: { postId: string }) => {
+  const { data, isPending } = useInfiniteScrollComments(postId)
+  const comments = data?.pages.flatMap((page) => page.comments) || []
+  const totalComments = comments.length
   return (
     <div className='group relative flex items-center sm:flex-col'>
-      <Button variant={'ghost'} size={'icon'}>
+      <Button variant={'ghost'} size={'icon'} disabled={isPending}>
         <Link href={'#comments'}>
           <MessageCircle className='transition-all group-hover:text-red-500' />
         </Link>

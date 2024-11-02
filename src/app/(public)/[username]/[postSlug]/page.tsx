@@ -74,12 +74,12 @@ export default async function DetailsPost({ params }: PageProps) {
 
   return (
     <div className='w-full rounded-lg border-input sm:border sm:bg-card'>
-      <div className='aspect-[2/1] w-full overflow-hidden'>
+      <div className='aspect-[2/1] w-full overflow-hidden md:aspect-[5/2]'>
         <Image
           src={checkImageURL(thumbnails[0])}
           alt={title}
           width={1920}
-          height={1080}
+          height={768}
           className='size-full rounded-t-lg object-cover'
           loading='lazy'
         />

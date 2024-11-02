@@ -74,20 +74,21 @@ const FormComment = ({
       } else {
         await updateComment({ body, commentId: commentId })
       }
+      form.setValue('content', '<p></p>')
       if (onSuccess) onSuccess()
-      form.reset()
     } catch (error) {
       console.log('🚀 ~ file: FormComment.tsx:48 ~ onSubmit ~ error:', error)
     }
   }
+
+  const handlePublish = () => {
+    form.handleSubmit(onSubmit)()
+  }
+
   return (
     <UnauthenticatedWrapper>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className='min-h-32 space-y-4'
-          autoComplete='false'
-        >
+        <form className='min-h-32 space-y-4' autoComplete='false'>
           <FormField
             control={form.control}
             name='content'
@@ -96,6 +97,7 @@ const FormComment = ({
                 <FormLabel className='sr-only'>Content</FormLabel>
                 <FormControl>
                   <MinimalTiptapCommentsEditor
+                    {...field}
                     value={field.value}
                     onChange={field.onChange}
                     throttleDelay={500}
@@ -107,6 +109,7 @@ const FormComment = ({
                     editable={true}
                     editorClassName='focus:outline-none'
                     immediatelyRender={false}
+                    onPublish={handlePublish}
                   />
                 </FormControl>
                 <FormMessage />

@@ -12,6 +12,22 @@ import InfoHover from '../ui/InfoHover'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 
+const WORD_PER_MINUTE = 225
+
+function calculateReadingTime(content: string) {
+  const words = content.trim().split(/\s+/)
+  const wordCount = words.length
+
+  const minutes = Math.ceil(wordCount / WORD_PER_MINUTE)
+
+  // Handle edge cases
+  if (minutes === 0) {
+    return '< 1 min read'
+  }
+
+  return `${minutes} min read`
+}
+
 const Post = ({ data }: { data: PostType }) => {
   return (
     <div className='w-full space-y-4 rounded-lg border border-input bg-card p-4'>
@@ -62,11 +78,11 @@ const Post = ({ data }: { data: PostType }) => {
       </div>
 
       <div className='flex items-center gap-3 sm:ml-9'>
-        <Button variant={'outline'} size={'sm'} className='rounded-full opacity-50'>
+        <Button variant={'outline'} size={'sm'} className='rounded-full opacity-70'>
           {data.category.name}
         </Button>
-        <Button variant={'outline'} size={'sm'} className='rounded-full opacity-50'>
-          4 min read
+        <Button variant={'outline'} size={'sm'} className='rounded-full opacity-70'>
+          {calculateReadingTime(data.content)}
         </Button>
       </div>
 

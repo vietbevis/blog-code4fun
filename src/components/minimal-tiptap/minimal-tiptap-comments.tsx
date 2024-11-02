@@ -25,11 +25,19 @@ export interface MinimalTiptapProps extends Omit<UseMinimalTiptapEditorProps, 'o
   onChange?: (value: Content) => void
   className?: string
   editorContentClassName?: string
+  onPublish?: () => void
 }
 
-const Toolbar = ({ editor }: { editor: Editor }) => {
+const Toolbar = ({ editor, onPublish }: { editor: Editor; onPublish?: () => void }) => {
   const pinned = useHeadroom({ fixedAt: 80 })
   const { isLoading } = useLoadingStore()
+
+  const handlePublish = () => {
+    if (onPublish) {
+      onPublish()
+    }
+    editor.commands.clearContent()
+  }
   return (
     <div
       className={cn(
@@ -67,6 +75,7 @@ const Toolbar = ({ editor }: { editor: Editor }) => {
             size={'sm'}
             disabled={isLoading || editor.isEmpty || editor.getText().trim().length <= 5}
             type='submit'
+            onClick={handlePublish}
           >
             Publish
             <Icon name='SendHorizontal' className='size-4' />
@@ -78,7 +87,7 @@ const Toolbar = ({ editor }: { editor: Editor }) => {
 }
 
 export const MinimalTiptapCommentsEditor = React.forwardRef<HTMLDivElement, MinimalTiptapProps>(
-  ({ value, onChange, className, editorContentClassName, ...props }, ref) => {
+  ({ value, onChange, className, editorContentClassName, onPublish, ...props }, ref) => {
     const editor = useMinimalTiptapEditor({
       value,
       onUpdate: onChange,
@@ -97,7 +106,7 @@ export const MinimalTiptapCommentsEditor = React.forwardRef<HTMLDivElement, Mini
           className
         )}
       >
-        <Toolbar editor={editor} />
+        <Toolbar editor={editor} onPublish={onPublish} />
         <EditorContent
           editor={editor}
           className={cn('minimal-tiptap-editor', editorContentClassName)}

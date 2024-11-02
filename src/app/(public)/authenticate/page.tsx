@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from 'react'
+import { toast } from 'sonner'
 
 import { useLoginGoogleMutation } from '@/services/queries/auth.query'
 
@@ -40,8 +41,9 @@ function Authenticate({ searchParams }: { searchParams: any }) {
           router.push(ROUTES.HOME)
           router.refresh()
         })
-        .catch(() => {
+        .catch((err) => {
           // Handle error, possibly redirect back to login or show error message
+          toast.error(err?.payload?.message || 'An error occurred')
           isInitialMount.current = false // Allow retry on error
           router.push(ROUTES.LOGIN)
           router.refresh()

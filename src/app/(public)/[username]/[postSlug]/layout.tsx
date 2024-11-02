@@ -50,7 +50,7 @@ export default async function Layout({ children, comments, params }: LayoutProps
       <article className='w-full gap-4 sm:flex'>
         <aside className='fixed bottom-0 left-0 z-40 mt-16 grid h-14 w-screen shrink-0 grid-cols-3 place-items-center gap-2 rounded-md border-t border-t-input bg-card sm:static sm:right-full sm:top-20 sm:h-fit sm:w-10 sm:grid-cols-1 sm:grid-rows-3 sm:rounded-none sm:border-none sm:bg-transparent'>
           <ButtonLike post={post} />
-          <ButtonComment />
+          <ButtonComment postId={post.id} />
           <ButtonShare />
         </aside>
         <div className='flex flex-1 flex-col gap-4 lg:flex-row'>
