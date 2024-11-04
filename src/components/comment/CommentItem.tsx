@@ -22,6 +22,7 @@ import { useDeleteComment, useInfiniteScrollCommentsChild } from '@/services/que
 import envConfig from '@/configs/envConfig'
 
 import useAuthStore from '@/stores/auth.store'
+import useLoadingStore from '@/stores/loading'
 
 import { CommentType } from '@/types/auth.type'
 
@@ -43,6 +44,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, authorPostId, level 
   const [reply, setReply] = useState(false)
   const [update, setUpdate] = useState(false)
   const [showMore, setShowMore] = useState(false)
+  const { setIsLoading } = useLoadingStore()
   const { userId } = useAuthStore()
   const { mutate: deleteComment, isPending: isPendingDel } = useDeleteComment(comment, level)
   const { data, hasNextPage, fetchNextPage, isFetching } = useInfiniteScrollCommentsChild(
@@ -67,6 +69,13 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, authorPostId, level 
   const isAuthorComment = authorPostId === comment.userId
   const canReply = level < MAX_LV_CMT
   const canEditAndDelete = userId === comment.userId
+
+  const handleSuccess = useCallback(() => {
+    setIsLoading(false)
+    setReply(false)
+    setShowMore(true)
+    setUpdate(false)
+  }, [setIsLoading])
 
   return (
     <Card
@@ -137,7 +146,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, authorPostId, level 
             defaultValues={comment.content}
             type='UPDATE'
             commentId={comment.id}
-            onSuccess={() => setUpdate(false)}
+            onSuccess={handleSuccess}
             level={level}
           />
         ) : (
@@ -170,10 +179,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, authorPostId, level 
               <FormComment
                 postId={comment.postId}
                 parentCommentId={comment.id}
-                onSuccess={() => {
-                  setReply(false)
-                  setShowMore(true)
-                }}
+                onSuccess={handleSuccess}
                 level={level + 1}
               />
             </div>

@@ -42,7 +42,7 @@ const PostList = ({ params }: { params?: PostQueryParams }) => {
   }
   return (
     <InfiniteScrollContainer
-      className='flex flex-col gap-4'
+      className='flex w-full flex-1 flex-col gap-4'
       onBottomReached={() => {
         if (hasNextPage && !isFetching) {
           fetchNextPage()

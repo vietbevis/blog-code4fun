@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { useNotifications } from '@/services/queries/account.query'
@@ -10,6 +10,10 @@ import { NotificationType } from '@/types/auth.type'
 
 import { ENotification } from '@/constants/enum'
 
+import { useFormatDate } from '@/lib/format'
+import { checkImageURL } from '@/lib/utils'
+
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import {
   DropdownMenu,
@@ -21,8 +25,9 @@ import {
 } from '../ui/dropdown-menu'
 import Icon from '../ui/icon'
 
-const Notifications = () => {
+const Notifications = React.memo(() => {
   const { data, isPending } = useNotifications()
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className='rounded-full' asChild>
@@ -36,8 +41,10 @@ const Notifications = () => {
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end' className='max-h-[30rem] w-96 overflow-y-auto p-2'>
-        <DropdownMenuLabel>Notifications ({data?.length})</DropdownMenuLabel>
+      <DropdownMenuContent align='end' className='max-h-[30rem] w-[28rem] overflow-y-auto p-2'>
+        <DropdownMenuLabel className='text-base font-bold'>
+          Notifications ({data?.length})
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {isPending && (
           <DropdownMenuItem className='justify-center py-4 text-center' disabled>
@@ -49,13 +56,17 @@ const Notifications = () => {
             No new notifications
           </DropdownMenuItem>
         )}
-        {data?.map((notification) => (
-          <CardNotifications key={uuidv4()} notification={notification} />
-        ))}
+        <div className='mt-2 flex flex-col gap-2'>
+          {data?.map((notification) => (
+            <CardNotifications key={uuidv4()} notification={notification} />
+          ))}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   )
-}
+})
+
+Notifications.displayName = 'Notifications'
 
 export default Notifications
 
@@ -66,18 +77,36 @@ const getDescriptionAndLink = (notification: NotificationType) => {
         description: 'just posted a new post',
         link: `/${notification.data.userName}/${notification.data.postSlug}`
       }
+    default:
+      return {
+        description: '',
+        link: '#'
+      }
   }
 }
 
-const CardNotifications = ({ notification }: { notification: NotificationType }) => {
-  const { description, link } = getDescriptionAndLink(notification)
+const CardNotifications = React.memo(({ notification }: { notification: NotificationType }) => {
+  const { description, link } = useMemo(() => getDescriptionAndLink(notification), [notification])
+  const date = useFormatDate(notification.data.createdDate)
+
   return (
     <Link href={link}>
-      <DropdownMenuItem key={uuidv4()} className='block'>
-        <strong>{notification.data.name} </strong>
-        <span>{description} </span>
-        <strong>{notification.data.postTitle}</strong>
+      <DropdownMenuItem className='gap-2'>
+        <Avatar className='size-12 border border-input'>
+          <AvatarImage src={checkImageURL(notification.data?.userAvatar)} alt='avatar' />
+          <AvatarFallback>{notification.data.name.charAt(0).toUpperCase()}</AvatarFallback>
+        </Avatar>
+        <div>
+          <p className='line-clamp-2 overflow-hidden text-base'>
+            <strong>{notification.data.name} </strong>
+            <span>{description} </span>
+            <strong>{notification.data.postTitle}</strong>
+          </p>
+          <p className='text-sm text-blue-500'>{date}</p>
+        </div>
       </DropdownMenuItem>
     </Link>
   )
-}
+})
+
+CardNotifications.displayName = 'CardNotifications'

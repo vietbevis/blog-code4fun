@@ -6,8 +6,6 @@ import * as React from 'react'
 
 import { Separator } from '@/components/ui/separator'
 
-import { useHeadroom } from '@/hooks/useHeadroom'
-
 import { cn } from '@/lib/utils'
 
 import { Button } from '../ui/button'
@@ -31,7 +29,8 @@ export interface MinimalTiptapProps extends Omit<UseMinimalTiptapEditorProps, 'o
 }
 
 const Toolbar = ({ editor }: { editor: Editor }) => {
-  const pinned = useHeadroom({ fixedAt: 80 })
+  // const pinned = useHeadroom({ fixedAt: 80 })
+  const pinned = true
   return (
     <div
       className={cn(
@@ -86,8 +85,9 @@ export const MinimalTiptapEditor = React.forwardRef<HTMLDivElement, MinimalTipta
     const editor = useMinimalTiptapEditor({
       value,
       onUpdate: onChange,
-      enableInputRules: true,
-      enablePasteRules: true,
+      autofocus: false,
+      enableInputRules: false,
+      enablePasteRules: false,
       ...props
     })
 

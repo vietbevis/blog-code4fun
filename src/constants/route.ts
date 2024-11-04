@@ -4,8 +4,8 @@ const ROUTES = {
   LOGOUT: '/logout',
   REGISTER: '/register',
   REFRESH_TOKEN: '/refresh-token',
-  PROFILE: '/settings',
-  CHANGE_PASSWORD: '/settings/account',
+  PROFILE: '/change-profile',
+  CHANGE_PASSWORD: '/change-password',
   NEWS: '/news',
   BACKEND: {
     // Auth routes
@@ -21,7 +21,7 @@ const ROUTES = {
     FOLLOW_USER: 'followers',
     GET_USER: 'public/users/byUserName',
     UPDATE_PROFILE: 'users/user-update',
-    TOP_USERS: 'public/posts/users/top-posters',
+    TOP_USERS: 'public/users/top-posters',
     NOTIFICATIONS: 'users/notifications',
 
     // Category routes

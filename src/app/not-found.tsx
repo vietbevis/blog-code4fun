@@ -1,18 +1,15 @@
-'use client'
-
 import Link from 'next/link'
 import React from 'react'
 
 import { Button } from '@/components/ui/button'
-
-import { useHeadroom } from '@/hooks/useHeadroom'
 
 import ROUTES from '@/constants/route'
 
 import { cn } from '@/lib/utils'
 
 const NotFound = () => {
-  const pinned = useHeadroom({ fixedAt: 80 })
+  // const pinned = useHeadroom({ fixedAt: 80 })
+  const pinned = true
   return (
     <div
       className={cn(

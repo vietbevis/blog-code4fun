@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import {
   Sheet,
@@ -17,7 +17,6 @@ import {
 import useAuthStore from '@/stores/auth.store'
 import useLoadingStore from '@/stores/loading'
 
-import { useHeadroom } from '@/hooks/useHeadroom'
 import { useMounted } from '@/hooks/useMounted'
 
 import ROUTES from '@/constants/route'
@@ -42,19 +41,27 @@ const Header = React.memo(() => {
   const { isAuth } = useAuthStore()
   const pathname = usePathname()
   const mounted = useMounted()
-  const pinned = useHeadroom({ fixedAt: 80 })
+  // const pinned = useHeadroom({ fixedAt: 80 })
+  const pinned = true
   const { isLoading } = useLoadingStore()
 
-  const isLoginOrRegister = pathname === ROUTES.LOGIN || pathname === ROUTES.REGISTER
+  const isLoginOrRegister = useMemo(
+    () => pathname === ROUTES.LOGIN || pathname === ROUTES.REGISTER,
+    [pathname]
+  )
 
-  return (
-    <header
-      className={cn(
+  const headerClassNames = useMemo(
+    () =>
+      cn(
         headerStyles.base,
         pinned ? headerStyles.pinned : headerStyles.unpinned,
         isLoading && 'pointer-events-none'
-      )}
-    >
+      ),
+    [pinned, isLoading]
+  )
+
+  return (
+    <header className={headerClassNames}>
       <div className='container grid size-full grid-cols-2 items-center gap-2 md:grid-cols-4 md:gap-3'>
         <div className='flex items-center gap-1 md:gap-2'>
           <Sheet>

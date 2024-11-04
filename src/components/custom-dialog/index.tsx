@@ -48,8 +48,8 @@ function DialogUnauthorized() {
   const fullUrl = pathname + searchParams
   return (
     <>
-      <h1 className='text-2xl font-semibold'>Unauthorized</h1>
-      <p className='mt-2'>You are not authorized to access this page.</p>
+      <h1 className='text-2xl font-semibold'>Notice</h1>
+      <p className='mt-2'>Please log in to use this feature.</p>
       <div className='ml-auto flex items-center gap-2 pt-4'>
         <Button variant={'destructive'} size={'sm'} onClick={() => onOpenChange(false)}>
           Cancel

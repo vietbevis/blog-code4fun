@@ -51,7 +51,7 @@ export interface AccountType {
   followType: 'UNFOLLOW' | 'FOLLOW' | null
 }
 
-export type UsersFollowingType = Pick<AccountType, 'id' | 'name'>
+export type UsersFollowingType = Pick<AccountType, 'id' | 'name' | 'userName'>
 export type UsersLikedPostType = UsersFollowingType & { type: string }
 
 // Post related types
@@ -157,8 +157,7 @@ export interface TopUserType {
   username: string
   postCount: number
   totalFavorites: number
-  followType: string
-  avatarUrl: string
+  userDetails: AccountType
 }
 
 export interface CommentType {
@@ -185,6 +184,8 @@ export interface DataFormNotificationsType {
   userEmail: string
   postId: string
   userName: string
+  createdDate: string
+  userAvatar: string
 }
 
 export interface NotificationType {

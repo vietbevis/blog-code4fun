@@ -78,12 +78,16 @@ const Post = ({ data }: { data: PostType }) => {
       </div>
 
       <div className='flex items-center gap-3 sm:ml-9'>
-        <Button variant={'outline'} size={'sm'} className='rounded-full opacity-70'>
-          {data.category.name}
-        </Button>
-        <Button variant={'outline'} size={'sm'} className='rounded-full opacity-70'>
-          {calculateReadingTime(data.content)}
-        </Button>
+        <Link href={`/category/${data.category.name}`}>
+          <Button variant={'outline'} size={'sm'} className='rounded-full opacity-70'>
+            {data.category.name}
+          </Button>
+        </Link>
+        <Link href={`/${data.createdBy.userName}/${data.slug}`}>
+          <Button variant={'outline'} size={'sm'} className='rounded-full opacity-70'>
+            {calculateReadingTime(data.content)}
+          </Button>
+        </Link>
       </div>
 
       {/* Like, Comments, Save */}

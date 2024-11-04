@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ])
   } catch (error) {
     console.error('Error fetching data:', error)
-    notFound()
+    return { title: 'Error' }
   }
   const url = envConfig.NEXT_PUBLIC_API_URL + `/${user.userName}/${post.slug}`
 

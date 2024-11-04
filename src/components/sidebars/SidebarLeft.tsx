@@ -5,8 +5,6 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { useTags } from '@/services/queries/post.query'
 
-import { useHeadroom } from '@/hooks/useHeadroom'
-
 import { cn, replaceSpecialChars } from '@/lib/utils'
 
 import { IconHome, IconJS, IconJava, IconJenkins } from '../icons'
@@ -31,7 +29,8 @@ const menuHomePage = [
 ]
 
 export default function SidebarLeft({ className }: { className?: string }) {
-  const pinned = useHeadroom({ fixedAt: 80 })
+  // const pinned = useHeadroom({ fixedAt: 80 })
+  const pinned = true
   const { data } = useTags()
 
   return (
@@ -43,7 +42,7 @@ export default function SidebarLeft({ className }: { className?: string }) {
         className
       )}
     >
-      <div className='flex flex-col gap-2 rounded-lg border border-input bg-card p-2 py-3'>
+      <div className='flex flex-col gap-2 rounded-lg border border-input bg-card p-2'>
         {menuHomePage.map((item) => (
           <ItemSidebarLeft data={item} key={item.id} />
         ))}
@@ -51,7 +50,7 @@ export default function SidebarLeft({ className }: { className?: string }) {
       {/* Tags */}
       {data && (
         <div className='flex grow flex-col overflow-hidden rounded-lg border border-input bg-card p-2 py-3'>
-          <h4 className='px-4 py-2 text-xl font-bold'>Related tags</h4>
+          <h4 className='px-4 pb-2 pt-1 text-xl font-bold'>Related tags</h4>
           <div className='flex max-h-80 flex-col gap-2 overflow-hidden hover:overflow-y-auto'>
             {data.payload.details.map((item) => (
               <ItemSidebarLeft

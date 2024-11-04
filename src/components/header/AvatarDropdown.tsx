@@ -54,6 +54,7 @@ const AvatarDropdown = () => {
   const { data } = useAccountMe()
   const { mutateAsync, isPending } = useLogoutMutation()
   const router = useRouter()
+  console.log('first')
   const handleLogout = async () => {
     try {
       await mutateAsync()
@@ -101,4 +102,4 @@ const AvatarDropdown = () => {
   )
 }
 
-export default AvatarDropdown
+export default React.memo(AvatarDropdown)

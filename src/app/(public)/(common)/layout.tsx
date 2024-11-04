@@ -4,6 +4,7 @@ import React from 'react'
 import SidebarLeft from '@/components/sidebars/SidebarLeft'
 import SidebarRight from '@/components/sidebars/SidebarRight'
 
+import AccountService from '@/services/account.service'
 import PostService from '@/services/post.service'
 
 import { EKeyQuery } from '@/constants/enum'
@@ -22,13 +23,22 @@ const layout = async ({
     queryFn: PostService.getTags
   })
 
+  await queryClient.prefetchQuery({
+    queryKey: [EKeyQuery.TOP_USERS],
+    queryFn: () => AccountService.getTopUsers()
+  })
+
   return (
-    <div className='grid grid-cols-2 items-start gap-4 py-4 md:grid-cols-3 xl:grid-cols-4'>
+    <div className='grid grid-cols-4 items-start gap-4 py-4'>
+      <div className='col-span-4 flex gap-4 xl:col-span-3'>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <SidebarLeft className='hidden basis-[27%] md:block' />
+        </HydrationBoundary>
+        <div className='col-span-2 flex flex-1 flex-col gap-4 md:col-span-3'>{children}</div>
+      </div>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <SidebarLeft className='hidden md:block' />
+        <SidebarRight className='hidden xl:block' />
       </HydrationBoundary>
-      <div className='col-span-2 flex flex-col gap-4'>{children}</div>
-      <SidebarRight className='hidden md:block' />
     </div>
   )
 }

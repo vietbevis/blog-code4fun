@@ -6,8 +6,6 @@ import * as React from 'react'
 
 import useLoadingStore from '@/stores/loading'
 
-import { useHeadroom } from '@/hooks/useHeadroom'
-
 import { cn } from '@/lib/utils'
 
 import { Button } from '../ui/button'
@@ -29,7 +27,8 @@ export interface MinimalTiptapProps extends Omit<UseMinimalTiptapEditorProps, 'o
 }
 
 const Toolbar = ({ editor, onPublish }: { editor: Editor; onPublish?: () => void }) => {
-  const pinned = useHeadroom({ fixedAt: 80 })
+  // const pinned = useHeadroom({ fixedAt: 80 })
+  const pinned = true
   const { isLoading } = useLoadingStore()
 
   const handlePublish = () => {
@@ -91,6 +90,9 @@ export const MinimalTiptapCommentsEditor = React.forwardRef<HTMLDivElement, Mini
     const editor = useMinimalTiptapEditor({
       value,
       onUpdate: onChange,
+      autofocus: false,
+      enableInputRules: false,
+      enablePasteRules: false,
       ...props
     })
 
