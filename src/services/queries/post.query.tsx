@@ -13,7 +13,8 @@ import { PostQueryParams, PostTypeResponse } from '@/types/auth.type'
 import { EKeyQuery } from '@/constants/enum'
 
 import PostService from '../post.service'
-import revalidateApiRequest from '../revalidate'
+
+// import revalidateApiRequest from '../revalidate'
 
 export const useDetailPost = ({ slug }: { slug: string }) => {
   return useQuery({
@@ -81,12 +82,12 @@ export const useLikePost = ({ slug }: { slug: string }) => {
 export const useCreatePost = () => {
   return useMutation({
     mutationFn: PostService.createPost,
-    onSuccess: async (data) => {
-      await Promise.all([
-        revalidateApiRequest(EKeyQuery.FEED_POSTS),
-        revalidateApiRequest(data.payload.details.createdBy.userName)
-      ])
-    },
+    // onSuccess: async (data) => {
+    //   await Promise.all([
+    //     revalidateApiRequest(EKeyQuery.FEED_POSTS),
+    //     revalidateApiRequest(data.payload.details.createdBy.userName)
+    //   ])
+    // },
     onError: (error) => {
       toast.error('Error', {
         description: error.message

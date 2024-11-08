@@ -101,7 +101,7 @@ const FormNewPost = ({ tags, categories, draft }: FormNewPostProps) => {
           router.replace(ROUTES.HOME)
           router.refresh()
           form.reset()
-          return `Create new post successfully`
+          return `Your post has been successfully submitted and is awaiting approval.`
         },
         error: `Failed to upload 1 post`
       }
