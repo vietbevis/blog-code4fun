@@ -75,7 +75,7 @@ const AvatarDropdown = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-72 p-2'>
         <DropdownMenuLabel>
-          <Link href={ROUTES.PROFILE}>
+          <Link href={`/${data?.userName ?? ''}`}>
             <p className='line-clamp-1 text-lg font-semibold'>{data?.name}</p>
             <p className='line-clamp-1 text-muted-foreground'>@{data?.userName}</p>
           </Link>

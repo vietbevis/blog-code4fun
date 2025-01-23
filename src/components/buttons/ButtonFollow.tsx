@@ -10,6 +10,8 @@ import useDialogStore from '@/stores/dialog.store'
 
 import { AccountType } from '@/types/auth.type'
 
+import ROUTES from '@/constants/route'
+
 import { cn } from '@/lib/utils'
 
 import { Button } from '../ui/button'
@@ -40,7 +42,7 @@ export default function ButtonFollow({ createdBy, className }: ButtonFollowProps
     if (!isAuth) {
       openDialog({ type: 'Unauthorized' })
     } else if (isSelf) {
-      router.push('/settings')
+      router.push(`${ROUTES.PROFILE}`)
     } else if (!isPending) {
       followUser(authorId)
     }
