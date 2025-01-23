@@ -17,8 +17,6 @@ firebase.initializeApp(firebaseConfig)
 const messaging = firebase.messaging()
 
 messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload)
-
   const userName = payload.data?.userName
   const postSlug = payload.data?.postSlug
 
@@ -34,8 +32,6 @@ messaging.onBackgroundMessage((payload) => {
 })
 
 self.addEventListener('notificationclick', function (event) {
-  console.log('[firebase-messaging-sw.js] Notification click received.')
-
   event.notification.close()
 
   event.waitUntil(
@@ -51,7 +47,6 @@ self.addEventListener('notificationclick', function (event) {
       }
 
       if (clients.openWindow) {
-        console.log('OPENWINDOW ON CLIENT')
         return clients.openWindow(url)
       }
     })

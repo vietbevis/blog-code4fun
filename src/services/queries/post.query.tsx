@@ -162,9 +162,7 @@ export const useInfiniteScrollSearchPosts = (query?: string) => {
 export const useSaveDraft = () => {
   return useMutation({
     mutationFn: PostService.saveDraft,
-    onError: (error) => {
-      console.log('🚀 ~ file: post.query.tsx:165 ~ useSaveDraft ~ error:', error)
-    }
+    onError: (error) => {}
   })
 }
 

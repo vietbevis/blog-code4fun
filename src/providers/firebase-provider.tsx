@@ -91,9 +91,7 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [])
 
-  useEffect(() => {
-    console.log('🚀 ~ file: firebase-provider.tsx:87 ~ useEffect ~ token:', token)
-  }, [token])
+  useEffect(() => {}, [token])
 
   useEffect(() => {
     const setupListener = async () => {

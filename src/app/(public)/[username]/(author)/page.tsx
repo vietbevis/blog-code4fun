@@ -25,9 +25,7 @@ export async function generateMetadata({ params }: { params: { username: string 
   try {
     const data = await AccountService.getUser(params.username)
     user = data.payload.details
-  } catch (error) {
-    console.log('🚀 ~ file: page.tsx:30 ~ generateMetadata ~ error:', error)
-  }
+  } catch (error) {}
 
   const url = `${envConfig.NEXT_PUBLIC_API_URL}/${params.username}`
 

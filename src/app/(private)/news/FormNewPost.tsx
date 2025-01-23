@@ -78,9 +78,7 @@ const FormNewPost = ({ tags, categories, draft }: FormNewPostProps) => {
   const handleChange = useDebouncedCallback((data: NewPostBodyType) => {
     try {
       saveDraft(data)
-    } catch (error) {
-      console.log('🚀 ~ file: FormNewPost.tsx:73 ~ handleChange ~ error:', error)
-    }
+    } catch (error) {}
   }, 2000)
 
   useEffect(() => {

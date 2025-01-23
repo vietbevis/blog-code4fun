@@ -40,9 +40,7 @@ const FormRegister = () => {
     if (isLoading || isPending) return
     try {
       await register(values)
-    } catch (error) {
-      console.log('🚀 ~ file: FormRegister.tsx:44 ~ onSubmit ~ error:', error)
-    }
+    } catch (error) {}
   }
   return (
     <>

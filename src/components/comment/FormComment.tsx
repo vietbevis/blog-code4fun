@@ -76,9 +76,7 @@ const FormComment = ({
       }
       form.setValue('content', '<p></p>')
       if (onSuccess) onSuccess()
-    } catch (error) {
-      console.log('🚀 ~ file: FormComment.tsx:48 ~ onSubmit ~ error:', error)
-    }
+    } catch (error) {}
   }
 
   const handlePublish = () => {

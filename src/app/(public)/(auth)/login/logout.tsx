@@ -32,9 +32,7 @@ const LogoutComponent = ({
         try {
           mutate()
           location.reload()
-        } catch (error) {
-          console.log('🚀 ~ file: logout.tsx:31 ~ performLogout ~ error:', error)
-        }
+        } catch (error) {}
       } else {
         if (!searchParams.redirect) {
           router.replace(ROUTES.LOGIN)

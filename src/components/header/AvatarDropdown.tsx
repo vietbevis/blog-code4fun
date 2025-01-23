@@ -54,15 +54,12 @@ const AvatarDropdown = () => {
   const { data } = useAccountMe()
   const { mutateAsync, isPending } = useLogoutMutation()
   const router = useRouter()
-  console.log('first')
   const handleLogout = async () => {
     try {
       await mutateAsync()
       router.push(ROUTES.HOME)
       router.refresh()
-    } catch (error) {
-      console.log('🚀 ~ file: ButtonLogout.tsx:11 ~ handleLogout ~ error:', error)
-    }
+    } catch (error) {}
   }
 
   return (

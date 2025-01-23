@@ -61,9 +61,7 @@ const FormLogin = ({
         router.replace(ROUTES.HOME)
         router.refresh()
       }
-    } catch (error) {
-      console.log('🚀 ~ onSubmit ~ error:', error)
-    }
+    } catch (error) {}
   }
 
   return (

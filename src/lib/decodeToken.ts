@@ -50,7 +50,6 @@ export const checkAndRefreshToken = async (param?: {
       login(result.payload)
       return param?.onSuccess && param.onSuccess()
     } catch (error) {
-      console.log('🚀 ~ file: decodeToken.ts:53 ~ error:', error)
       return param?.onError && param.onError()
     }
   }

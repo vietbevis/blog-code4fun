@@ -39,9 +39,7 @@ const useAuthStore = create<AuthState>()(
                 userId: decodedToken.userId
               })
             }
-          } catch (error) {
-            console.log('🚀 ~ file: auth.store.ts:38 ~ login: ~ error:', error)
-          }
+          } catch (error) {}
         },
         logout: () => set({ isAuth: false, token: null, roles: [], userId: null })
       }),
