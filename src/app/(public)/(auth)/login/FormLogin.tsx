@@ -44,8 +44,8 @@ const FormLogin = ({
   const form = useForm<LoginBodyType>({
     resolver: zodResolver(FormLoginSchema),
     defaultValues: {
-      email: 'nguyenvanviet.150204@gmail.com',
-      password: 'NguyenvanA@123',
+      email: '',
+      password: '',
       deviceInfo
     }
   })

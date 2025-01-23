@@ -30,9 +30,9 @@ const FormRegister = () => {
   const form = useForm<RegisterBodyType>({
     resolver: zodResolver(FormRegisterSchema),
     defaultValues: {
-      name: 'Nguyen Van Viet',
-      email: 'nguyenvanviet@gmail.com',
-      password: 'Vietviet@150204'
+      name: '',
+      email: '',
+      password: ''
     }
   })
 
